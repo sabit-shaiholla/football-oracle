@@ -20,7 +20,7 @@ public class User implements UserDetails {
     @Setter
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    private Long id;
 
     @Getter
     @Setter
@@ -44,7 +44,7 @@ public class User implements UserDetails {
         this.password = password;
     }
 
-    public User(Integer id, String email, String name, String password) {
+    public User(Long id, String email, String name, String password) {
         this.id = id;
         this.email = email;
         this.name = name;

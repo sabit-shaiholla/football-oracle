@@ -3,6 +3,10 @@ server:
   error:
     include-message: always
 
+jwt:
+    secret: "my_secret_key"
+    expiration: 86400000
+
 cors:
     allowed-origins: "*"
     allowed-methods: "*"

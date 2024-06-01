@@ -1,4 +1,4 @@
-package com.oracle.football.football_oracle;
+package com.oracle.football;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
