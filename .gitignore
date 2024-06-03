@@ -30,3 +30,6 @@ out/
 *.iml
 *.ipr
 *.iws
+
+# Dot Env file
+*.env
