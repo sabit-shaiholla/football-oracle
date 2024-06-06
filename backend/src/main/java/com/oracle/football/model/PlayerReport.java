@@ -18,8 +18,8 @@ public class PlayerReport {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long reportId;
 
-    @ManyToOne
-    @JoinColumn(name = "player_id")
+    @OneToOne
+    @JoinColumn(name = "player_id", unique = true)
     private Player player;
 
     private String playerStrengths;

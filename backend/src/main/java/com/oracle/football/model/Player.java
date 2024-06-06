@@ -28,8 +28,8 @@ public class Player {
     @OneToMany(mappedBy = "player", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<UserPlayerReview> reviews;
 
-    @OneToMany(mappedBy = "player", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<PlayerReport> reports;
+    @OneToOne(mappedBy = "player", cascade = CascadeType.ALL, orphanRemoval = true)
+    private PlayerReport reports;
 
     @ElementCollection
     @CollectionTable(name = "player_statistics")

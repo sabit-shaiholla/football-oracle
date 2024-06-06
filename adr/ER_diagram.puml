@@ -1,53 +1,48 @@
 @startuml
-' hide the spot
-' hide circle
 
-' avoid problems with angled crows feet
-
-top to bottom direction
+!theme plain
 skinparam linetype ortho
 
-class Player {
-  - playerId: Long
-  - playerName: String
-  - playerPosition: String
-  - playerAge: int
-  - birthday: String
-  - team: String
-  - statistics: Map<String, String>
-  - reviews: List<UserPlayerReview>
-  - reports: List<PlayerReport>
+entity "Player" {
+  * playerId: Long <<generated>> (PK)
+  --
+  playerName: String
+  playerPosition: String
+  playerAge: int
+  birthday: String
+  team: String
 }
 
-class PlayerReport {
-  - reportId: Long
-  - playerStrengths: String
-  - playerWeaknesses: String
-  - playerSummary: String
-  - player: Player
-  - reviews: List<UserPlayerReview>
+entity "PlayerReport" {
+  * reportId: Long <<generated>> (PK)
+  --
+  playerStrengths: String
+  playerWeaknesses: String
+  playerSummary: String
 }
 
-class User {
-  - id: Long
-  - name: String
-  - password: String
-  - email: String
-  - reviews: List<UserPlayerReview>
+entity "User" {
+  * id: Long <<generated>> (PK)
+  --
+  name: String
+  password: String
+  email: String
 }
 
-class UserPlayerReview {
-  - reviewId: Long
-  - review: String
-  - rating: int
-  - player: Player
-  - playerReport: PlayerReport
-  - user: User
+entity "UserPlayerReview" {
+  * reviewId: Long (PK)
+  --
+  review: String
+  rating: int
+  --
+  user_id: Long (FK)
+  player_id: Long (FK)
+  report_id: Long (FK)
 }
 
-Player "1" *-- "*" PlayerReport: has
-Player "1" *-- "*" UserPlayerReview: has
-PlayerReport "1" *-- "*" UserPlayerReview: has
-User "1" *-- "*" UserPlayerReview: has
+Player ||--|| PlayerReport : "1" Player has "report"
+Player ||--o{ UserPlayerReview : "1" Player has "reviews"
+PlayerReport ||--o{ UserPlayerReview : "1" Report has "reviews"
+User ||--o{ UserPlayerReview : "1" User has "reviews"
 
 @enduml
