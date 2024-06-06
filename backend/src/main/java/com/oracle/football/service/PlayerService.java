@@ -23,7 +23,7 @@ public class PlayerService {
     }
 
     public Optional<Player> findPlayerByName(String playerName) {
-        return Optional.ofNullable(playerRepository.findByPlayerName(playerName));
+        return playerRepository.findByPlayerName(playerName);
     }
 
     public PlayerReport generatePlayerReport(String playerName) {

@@ -1,0 +1,50 @@
+@startuml
+
+!theme plain
+top to bottom direction
+skinparam linetype ortho
+
+class Player {
+  - team: String
+  - reviews: List<UserPlayerReview>
+  - reports: List<PlayerReport>
+  - playerAge: int
+  - playerName: String
+  - playerPosition: String
+  - statistics: Map<String, String>
+  - playerId: Long
+  - birthday: String
+}
+class PlayerReport {
+  - reviews: List<UserPlayerReview>
+  - player: Player
+  - playerStrengths: String
+  - playerWeaknesses: String
+  - playerSummary: String
+  - reportId: Long
+}
+class User {
+  - id: Long
+  - name: String
+  - password: String
+  - reviews: List<UserPlayerReview>
+  - email: String
+}
+class UserPlayerReview {
+  - reviewId: Long
+  - review: String
+  - rating: int
+  - playerReport: PlayerReport
+  - player: Player
+  - user: User
+}
+
+Player           "1" *-[#595959,plain]-> "reports\n*" PlayerReport     
+Player           "1" *-[#595959,plain]-> "reviews\n*" UserPlayerReview 
+PlayerReport     "1" *-[#595959,plain]-> "player\n1" Player           
+PlayerReport     "1" *-[#595959,plain]-> "reviews\n*" UserPlayerReview 
+User             "1" *-[#595959,plain]-> "reviews\n*" UserPlayerReview 
+UserPlayerReview "1" *-[#595959,plain]-> "player\n1" Player           
+UserPlayerReview "1" *-[#595959,plain]-> "playerReport\n1" PlayerReport     
+UserPlayerReview "1" *-[#595959,plain]-> "user\n1" User             
+@enduml

@@ -4,13 +4,14 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
-import lombok.ToString;
+
+import java.util.List;
 
 @Getter
 @Setter
-@ToString
 @RequiredArgsConstructor
 @Entity
+@Table(name = "player_report")
 public class PlayerReport {
 
     @Id
@@ -24,4 +25,7 @@ public class PlayerReport {
     private String playerStrengths;
     private String playerWeaknesses;
     private String playerSummary;
+
+    @OneToMany(mappedBy = "playerReport", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<UserPlayerReview> reviews;
 }

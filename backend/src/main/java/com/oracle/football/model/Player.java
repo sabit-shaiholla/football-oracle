@@ -1,23 +1,39 @@
 package com.oracle.football.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.*;
+
+import java.util.List;
+import java.util.Map;
 
 @Getter
 @Setter
-@ToString
 @RequiredArgsConstructor
 @Entity
+@Table(name = "players")
 public class Player {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long playerId;
+
+    @Column(unique = true, nullable = false)
     private String playerName;
+
     private String playerPosition;
     private int playerAge;
+    private String birthday;
     private String team;
+
+    @OneToMany(mappedBy = "player", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<UserPlayerReview> reviews;
+
+    @OneToMany(mappedBy = "player", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<PlayerReport> reports;
+
+    @ElementCollection
+    @CollectionTable(name = "player_statistics")
+    @MapKeyColumn(name = "statistic_name")
+    @Column(name = "statistic_value")
+    private Map<String, String> statistics;
 }
