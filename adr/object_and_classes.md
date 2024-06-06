@@ -1,55 +1,51 @@
 ```plantuml
 @startuml
 
-class User {
-  Integer userId
-  String username
-  String password
-  String email
-  String role
-}
+top to bottom direction
+skinparam linetype ortho
 
 class Player {
-  Long playerId
-  String name
-  Integer age
-  String team
-  String position
-  Map<String, Object> statistics
+  - playerId: Long
+  - playerName: String
+  - playerPosition: String
+  - playerAge: int
+  - birthday: String
+  - team: String
+  - statistics: Map<String, String>
+  - reviews: List<UserPlayerReview>
+  - reports: List<PlayerReport>
 }
 
-class Report {
-  Long reportId
-  Long playerId
-  String content
-  Date createdAt
+class PlayerReport {
+  - reportId: Long
+  - playerStrengths: String
+  - playerWeaknesses: String
+  - playerSummary: String
+  - player: Player
+  - reviews: List<UserPlayerReview>
 }
 
-class Rating {
-  Long ratingId
-  Long reportId
-  Long userId
-  Integer score
+class User {
+  - id: Long
+  - name: String
+  - password: String
+  - email: String
+  - reviews: List<UserPlayerReview>
 }
 
-class Review {
-  Long reviewId
-  Long reportId
-  Long userId
-  String comment
-  Date createdAt
+class UserPlayerReview {
+  - reviewId: Long
+  - review: String
+  - rating: int
+  - player: Player
+  - playerReport: PlayerReport
+  - user: User
 }
 
-User "1" -- "0..*" Rating : has
-User "1" -- "0..*" Review : has
-Player "1" -- "0..*" Report : has
-Report "0..*" -- "1" Player : belongs to
-Report "0..*" -- "1" Rating : has
-Report "0..*" -- "1" Review : has
-Rating "1" -- "1" Report : belongs to
-Rating "1" -- "1" User : belongs to
-Review "1" -- "1" Report : belongs to
-Review "1" -- "1" User : belongs to
+Player "1" *-- "*" PlayerReport: has
+Player "1" *-- "*" UserPlayerReview: has
+PlayerReport "1" *-- "*" UserPlayerReview: has
+User "1" *-- "*" UserPlayerReview: has
 
 @enduml
 ```

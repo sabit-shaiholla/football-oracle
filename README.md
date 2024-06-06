@@ -27,6 +27,9 @@ Please see the [Use Cases](adr/use_cases.md) for detailed information on the use
 ## Object and Classes
 Please see the [Object and Classes](adr/object_and_classes.md) for detailed information on the object and classes of Football Oracle.
 
+## Entity Relationship Diagram
+Please see the [Entity Relationship Diagram](adr/ER_diagram.puml) for detailed information on the entity relationship diagram of Football Oracle.
+
 ## Project Structure
 
 ```
