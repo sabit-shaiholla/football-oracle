@@ -7,6 +7,16 @@ jwt:
     secret: "my_secret_key"
     expiration: 86400000
 
+google:
+  cloud:
+    project-id: "project-id"
+    region: "region"
+gemini:
+  api:
+    key: "api-key"
+  model:
+    endpoint-id: "endpoint-id"
+
 cors:
     allowed-origins: "*"
     allowed-methods: "*"
@@ -19,14 +29,25 @@ management:
         exposure:
             include: "health, info"
 
+logging:
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss} - %msg%n"
+    file: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n"
+  level:
+    root: INFO
+    com.oracle.football: DEBUG
+  file:
+    name: logs/app.log
+
+
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:5432/users
+    url: jdbc:postgresql://localhost:5432/fb-oracle-db
     username: postgres
     password: postgres
   jpa:
     hibernate:
-      ddl-auto: validate
+      ddl-auto: update
     show-sql: true
     properties:
       hibernate:

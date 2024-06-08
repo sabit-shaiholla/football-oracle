@@ -11,7 +11,7 @@ import java.util.List;
 @Setter
 @RequiredArgsConstructor
 @Entity
-@Table(name = "player_report")
+@Table(name = "player_reports")
 public class PlayerReport {
 
     @Id

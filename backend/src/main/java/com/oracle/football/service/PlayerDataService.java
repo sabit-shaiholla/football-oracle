@@ -1,12 +1,12 @@
 package com.oracle.football.service;
 
 import com.oracle.football.model.Player;
+import com.oracle.football.repository.PlayerReportRepository;
 import com.oracle.football.repository.PlayerRepository;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -21,22 +21,39 @@ public class PlayerDataService {
 
     private static final String FBREF_SEARCH_URL = "https://fbref.com/en/";
 
-    @Autowired
-    private PlayerRepository playerRepository;
+    private final PlayerRepository playerRepository;
+    private final PlayerReportRepository playerReportRepository;
+    private final PlayerReportService playerReportService;
 
-    public Player getPlayerDataByName(String playerName) throws IOException {
-        Optional<Player> existingPlayer = playerRepository.findByPlayerName(playerName);
+    public PlayerDataService(PlayerRepository playerRepository,
+                             PlayerReportRepository playerReportRepository,
+                             PlayerReportService playerReportService) {
+        this.playerRepository = playerRepository;
+        this.playerReportRepository = playerReportRepository;
+        this.playerReportService = playerReportService;
+    }
 
-        if (existingPlayer.isPresent()) {
-            return existingPlayer.get();
-        } else {
-            String playerUrl = searchForPlayerUrl(playerName);
-            if (playerUrl == null) {
-                throw new IllegalArgumentException("Player not found");
+    public Player getPlayerDataByName(String playerName) {
+        try {
+            Optional<Player> existingPlayer = playerRepository.findByPlayerName(playerName);
+
+            if (existingPlayer.isPresent()) {
+                return existingPlayer.get();
+            } else {
+                String playerUrl = searchForPlayerUrl(playerName);
+                if (playerUrl == null) {
+                    throw new IllegalArgumentException("Player not found");
+                }
+                Player player = fetchPlayerData(playerUrl);
+                player.setPlayerName(playerName);
+                Player savedPlayer = playerRepository.save(player);
+
+                playerReportService.getOrCreatePlayerReport(playerName);
+
+                return savedPlayer;
             }
-            Player player = fetchPlayerData(playerUrl);
-            player.setPlayerName(playerName);
-            return playerRepository.save(player);
+        } catch (IOException e) {
+            throw new RuntimeException("Error while getting player data", e);
         }
     }
 

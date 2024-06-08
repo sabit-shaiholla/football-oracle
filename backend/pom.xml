@@ -23,6 +23,8 @@
 		<validation-api.version>2.0.1.Final</validation-api.version>
 		<jsoup.version>1.17.2</jsoup.version>
 		<httpclient5.version>5.3.1</httpclient5.version>
+		<vertexai.version>1.5.0</vertexai.version>
+		<protobuf.version>4.27.1</protobuf.version>
 	</properties>
 
 	<dependencies>
@@ -41,6 +43,12 @@
 		<dependency>
 			<groupId>org.flywaydb</groupId>
 			<artifactId>flyway-database-postgresql</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>com.google.cloud</groupId>
+			<artifactId>google-cloud-vertexai</artifactId>
+			<version>${vertexai.version}</version>
 		</dependency>
 
 		<dependency>
