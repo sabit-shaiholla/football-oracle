@@ -2,16 +2,11 @@ import {
     AlertDialog,
     AlertDialogBody, AlertDialogContent,
     AlertDialogFooter, AlertDialogHeader, AlertDialogOverlay,
-    Avatar,
     Box,
     Button,
     Center,
-    Flex,
-    Heading,
     Image,
     Stack,
-    Tag,
-    Text,
     useColorModeValue, useDisclosure,
 } from '@chakra-ui/react';
 
