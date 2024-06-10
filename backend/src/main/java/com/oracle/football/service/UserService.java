@@ -46,7 +46,7 @@ public class UserService {
     public void addUser(UserRegistrationRequest userRegistrationRequest) {
         String email = userRegistrationRequest.email();
         if (userDao.existsUserWithEmail(email)) {
-            throw new DuplicateResourceException("User with email " + email + " already exists");
+            throw new DuplicateResourceException("User with username " + email + " already exists");
         }
 
         User user = new User(
@@ -74,7 +74,7 @@ public class UserService {
 
         if (userUpdateRequest.email() != null && !userUpdateRequest.email().equals(user.getEmail())) {
             if (userDao.existsUserWithEmail(userUpdateRequest.email())) {
-                throw new DuplicateResourceException("User with email " + userUpdateRequest.email() + " already exists");
+                throw new DuplicateResourceException("User with username " + userUpdateRequest.email() + " already exists");
             }
             user.setEmail(userUpdateRequest.email());
             changes = true;

@@ -4,7 +4,7 @@ import com.oracle.football.dto.AuthenticationRequest;
 import com.oracle.football.dto.AuthenticationResponse;
 import com.oracle.football.dto.UserDTO;
 import com.oracle.football.model.User;
-import com.oracle.football.security.jwt.JwtUtil;
+import com.oracle.football.jwt.JwtUtil;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -25,11 +25,14 @@ public class AuthenticationService {
 
     public AuthenticationResponse login(AuthenticationRequest request){
         Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(request.email(), request.password())
+                new UsernamePasswordAuthenticationToken(
+                        request.username(),
+                        request.password()
+                )
         );
         User principal = (User) authentication.getPrincipal();
         UserDTO userDTO = userDTOMapper.apply(principal);
-        String token = jwtUtil.generateToken(userDTO.email(), userDTO.roles());
+        String token = jwtUtil.issueToken(userDTO.username(), userDTO.roles());
         return new AuthenticationResponse(token, userDTO);
     }
 }

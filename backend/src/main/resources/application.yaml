@@ -4,16 +4,13 @@ server:
     include-message: always
 
 jwt:
-    secret: "my_secret_key"
-    expiration: 86400000
+    secret: "foobar_123456789_batman_123456789_ironman_123456789"
 
 google:
   cloud:
-    project-id: "project-id"
-    region: "region"
+    project-id: "gen-lang-client-0946890480"
+    region: "europe-west3"
 gemini:
-  api:
-    key: "api-key"
   model:
     endpoint-id: "endpoint-id"
 

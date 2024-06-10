@@ -1,14 +1,17 @@
 package com.oracle.football.exception;
 
 import jakarta.servlet.http.HttpServletRequest;
-import org.springframework.context.annotation.Configuration;
+import org.jsoup.select.Selector;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.InsufficientAuthenticationException;
+import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
-@Configuration
+import java.time.LocalDateTime;
+
+@ControllerAdvice
 public class DefaultExceptionHandler {
 
     @ExceptionHandler(ResourceNotFoundException.class)
@@ -18,7 +21,7 @@ public class DefaultExceptionHandler {
                 request.getRequestURI(),
                 e.getMessage(),
                 HttpStatus.NOT_FOUND.value(),
-                java.time.LocalDateTime.now()
+                LocalDateTime.now()
         );
         return new ResponseEntity<>(apiError, HttpStatus.NOT_FOUND);
     }
@@ -30,7 +33,7 @@ public class DefaultExceptionHandler {
                 request.getRequestURI(),
                 e.getMessage(),
                 HttpStatus.FORBIDDEN.value(),
-                java.time.LocalDateTime.now()
+                LocalDateTime.now()
         );
         return new ResponseEntity<>(apiError, HttpStatus.FORBIDDEN);
     }
@@ -42,7 +45,7 @@ public class DefaultExceptionHandler {
                 request.getRequestURI(),
                 e.getMessage(),
                 HttpStatus.UNAUTHORIZED.value(),
-                java.time.LocalDateTime.now()
+                LocalDateTime.now()
         );
         return new ResponseEntity<>(apiError, HttpStatus.UNAUTHORIZED);
     }
@@ -54,7 +57,19 @@ public class DefaultExceptionHandler {
                 request.getRequestURI(),
                 e.getMessage(),
                 HttpStatus.INTERNAL_SERVER_ERROR.value(),
-                java.time.LocalDateTime.now()
+                LocalDateTime.now()
+        );
+        return new ResponseEntity<>(apiError, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    @ExceptionHandler(Selector.SelectorParseException.class)
+    public ResponseEntity<ApiError> handleException(Selector.SelectorParseException e,
+                                                    HttpServletRequest request) {
+        ApiError apiError = new ApiError(
+                request.getRequestURI(),
+                e.getMessage(),
+                HttpStatus.INTERNAL_SERVER_ERROR.value(),
+                LocalDateTime.now()
         );
         return new ResponseEntity<>(apiError, HttpStatus.INTERNAL_SERVER_ERROR);
     }

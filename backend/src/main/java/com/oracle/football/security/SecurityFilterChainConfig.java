@@ -1,6 +1,6 @@
 package com.oracle.football.security;
 
-import com.oracle.football.security.jwt.JwtAuthenticationFilter;
+import com.oracle.football.jwt.JwtAuthenticationFilter;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -9,6 +9,7 @@ import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
@@ -33,18 +34,24 @@ public class SecurityFilterChainConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                .csrf(csrf -> csrf.disable())
+                .csrf(AbstractHttpConfigurer::disable)
                 .cors(Customizer.withDefaults())
                 .authorizeHttpRequests(auth -> auth.
                         requestMatchers(
                                 HttpMethod.POST,
-                                "/api/v1/auth/login"
+                                "/api/v1/auth/login",
+                                "/api/v1/users"
                         )
                         .permitAll()
                         .requestMatchers(
                                 HttpMethod.GET,
-                                "/ping"
+                                "/ping",
+                                "/api/v1/users"
                         )
+                        .permitAll()
+                        .requestMatchers(
+                                HttpMethod.GET,
+                                "/actuator/**")
                         .permitAll()
                         .anyRequest()
                         .authenticated()
@@ -59,4 +66,5 @@ public class SecurityFilterChainConfig {
 
         return http.build();
     }
+
 }

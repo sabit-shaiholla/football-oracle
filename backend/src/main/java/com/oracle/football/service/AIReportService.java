@@ -25,12 +25,6 @@ public class AIReportService {
     @Value("${google.cloud.region}")
     private String region;
 
-    @Value("${gemini.model.endpoint-id}")
-    private String endpointId;
-
-    @Value("${gemini.api.key}")
-    private String apiKey;
-
     public PlayerReport generateScoutingReport(Player player) {
         logger.debug("Generating scouting report for player: {}", player.getPlayerName());
 
@@ -68,25 +62,24 @@ public class AIReportService {
         try (VertexAI vertexAi = new VertexAI.Builder()
                 .setProjectId(projectId)
                 .setLocation(region)
-                .setApiEndpoint(endpointId)
                 .build()) {
 
             GenerativeModel model = new GenerativeModel("gemini-1.5-pro", vertexAi);
             GenerateContentResponse response = model.generateContent(prompt);
 
             String generatedContent = response.
-                    getCandidatesList().getFirst().
+                    getCandidatesList().get(0).
                     getContent().
-                    getPartsList().getFirst().getText();
+                    getPartsList().get(0).getText();
+            logger.debug("Generated content from API: {}", generatedContent);
 
             PlayerReport playerReport = new PlayerReport();
             playerReport.setPlayer(player);
-            playerReport.setPlayerStrengths(parseStrengths(generatedContent));
-            playerReport.setPlayerWeaknesses(parseWeaknesses(generatedContent));
-            playerReport.setPlayerSummary(parseSummary(generatedContent));
+            playerReport.setPlayerStrengths(parseSection(generatedContent, "## Strengths", "## Weaknesses"));
+            playerReport.setPlayerWeaknesses(parseSection(generatedContent, "## Weaknesses", "## Summary"));
+            playerReport.setPlayerSummary(parseSection(generatedContent, "## Summary", null));
 
-            logger.debug("Received report from Gemini Pro for player: {}", player.getPlayerName());
-
+            logger.debug("Parsed player report: {}", playerReport);
             return playerReport;
         } catch (IOException e) {
             logger.error("Error while calling Gemini Pro API", e);
@@ -94,28 +87,16 @@ public class AIReportService {
         }
     }
 
-    private String parseStrengths(String content) {
-        return extractSection(content, "## Strengths", "## Weaknesses");
-    }
-
-    private String parseWeaknesses(String content) {
-        return extractSection(content, "## Weaknesses", "## Summary");
-    }
-
-    private String parseSummary(String content) {
-        return extractSection(content, "## Summary", null);
-    }
-
-    private String extractSection(String content, String startSection, String endSection) {
+    private String parseSection(String content, String startSection, String endSection){
         String regex;
-        if (endSection != null) {
+        if (endSection != null){
             regex = Pattern.quote(startSection) + "(.*?)" + Pattern.quote(endSection);
         } else {
             regex = Pattern.quote(startSection) + "(.*)";
         }
         Pattern pattern = Pattern.compile(regex, Pattern.DOTALL);
         Matcher matcher = pattern.matcher(content);
-        if (matcher.find()) {
+        if (matcher.find()){
             return matcher.group(1).trim();
         }
         return "";

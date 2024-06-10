@@ -1,10 +1,7 @@
 package com.oracle.football.model;
 
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
@@ -13,13 +10,14 @@ import javax.validation.constraints.Min;
 @Setter
 @ToString
 @RequiredArgsConstructor
+@AllArgsConstructor
 @Entity
 @Table(name = "user_player_reviews")
 public class UserPlayerReview {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long reviewId;
+    private Integer reviewId;
 
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)

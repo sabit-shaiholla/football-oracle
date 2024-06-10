@@ -17,14 +17,14 @@
 	<description>Football-Oracle project</description>
 
 	<properties>
-		<java.version>21</java.version>
-		<jsonwebtoken.version>0.12.5</jsonwebtoken.version>
+		<maven.compiler.source>17</maven.compiler.source>
+		<maven.compiler.target>17</maven.compiler.target>
+		<jsonwebtoken.version>0.11.5</jsonwebtoken.version>
 		<lombok.version>1.18.32</lombok.version>
 		<validation-api.version>2.0.1.Final</validation-api.version>
 		<jsoup.version>1.17.2</jsoup.version>
 		<httpclient5.version>5.3.1</httpclient5.version>
 		<vertexai.version>1.5.0</vertexai.version>
-		<protobuf.version>4.27.1</protobuf.version>
 	</properties>
 
 	<dependencies>
@@ -77,6 +77,11 @@
 		</dependency>
 
 		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-actuator</artifactId>
+		</dependency>
+
+		<dependency>
 			<groupId>javax.validation</groupId>
 			<artifactId>validation-api</artifactId>
 			<version>${validation-api.version}</version>
@@ -125,6 +130,11 @@
 			<artifactId>jjwt-jackson</artifactId>
 			<version>${jsonwebtoken.version}</version>
 			<scope>runtime</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>com.fasterxml.jackson.core</groupId>
+			<artifactId>jackson-databind</artifactId>
 		</dependency>
 
 	</dependencies>

@@ -21,7 +21,7 @@ public class UserJDBCAccessService implements UserDao {
     @Override
     public List<User> selectAllUsers() {
         var sql = """
-                SELECT id, email, name, password
+                SELECT id, name, email, password
                 FROM users
                 LIMIT 1000
                 """;
@@ -35,7 +35,9 @@ public class UserJDBCAccessService implements UserDao {
                 FROM users
                 WHERE id = ?
                 """;
-        return Optional.ofNullable(jdbcTemplate.queryForObject(sql, userRowMapper, userId));
+        return jdbcTemplate.query(sql, userRowMapper, userId)
+                .stream()
+                .findFirst();
     }
 
     @Override
@@ -45,16 +47,23 @@ public class UserJDBCAccessService implements UserDao {
                 FROM users
                 WHERE email = ?
                 """;
-        return Optional.ofNullable(jdbcTemplate.queryForObject(sql, userRowMapper, email));
+        return jdbcTemplate.query(sql, userRowMapper, email)
+                .stream()
+                .findFirst();
     }
 
     @Override
     public void insertUser(User user){
         var sql = """
-                INSERT INTO users (email, name, password)
+                INSERT INTO users (name, email, password)
                 VALUES (?, ?, ?)
                 """;
-        jdbcTemplate.update(sql, user.getEmail(), user.getName(), user.getPassword());
+        int result = jdbcTemplate.update(
+                sql,
+                user.getName(),
+                user.getEmail(),
+                user.getPassword());
+        System.out.println("insertUser result " + result);
     }
 
     @Override
@@ -85,18 +94,27 @@ public class UserJDBCAccessService implements UserDao {
                 DELETE FROM users
                 WHERE id = ?
                 """;
-        jdbcTemplate.update(sql, userId);
+        int result = jdbcTemplate.update(sql, userId);
+        System.out.println("deleteUserById result = " + result);
     }
 
     @Override
     public void updateUser(User updatedUser) {
         if (updatedUser.getName() != null) {
             String sql = "UPDATE users SET name = ? WHERE id = ?";
-            jdbcTemplate.update(sql, updatedUser.getName(), updatedUser.getId());
+            int result = jdbcTemplate.update(
+                    sql,
+                    updatedUser.getName(),
+                    updatedUser.getId());
+            System.out.println("updateUser name result " + result);
         }
         if (updatedUser.getEmail() != null) {
             String sql = "UPDATE users SET email = ? WHERE id = ?";
-            jdbcTemplate.update(sql, updatedUser.getEmail(), updatedUser.getId());
+            int result = jdbcTemplate.update(
+                    sql,
+                    updatedUser.getEmail(),
+                    updatedUser.getId());
+            System.out.println("updateUser username result " + result);
         }
     }
 }

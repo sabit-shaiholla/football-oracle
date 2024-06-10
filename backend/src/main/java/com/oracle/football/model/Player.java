@@ -9,13 +9,14 @@ import java.util.Map;
 @Getter
 @Setter
 @RequiredArgsConstructor
+@AllArgsConstructor
 @Entity
 @Table(name = "players")
 public class Player {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long playerId;
+    private Integer playerId;
 
     @Column(unique = true, nullable = false)
     private String playerName;

@@ -1,7 +1,6 @@
 package com.oracle.football.model;
 
 import jakarta.persistence.*;
-import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.security.core.GrantedAuthority;
@@ -11,8 +10,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
-@Data
 @Entity
 @Table(name = "users")
 public class User implements UserDetails {
@@ -21,7 +20,7 @@ public class User implements UserDetails {
     @Setter
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Integer id;
 
     @Getter
     @Setter
@@ -48,7 +47,7 @@ public class User implements UserDetails {
         this.password = password;
     }
 
-    public User(Long id, String email, String name, String password) {
+    public User(Integer id, String email, String name, String password) {
         this.id = id;
         this.email = email;
         this.name = name;
@@ -83,6 +82,37 @@ public class User implements UserDetails {
     @Override
     public boolean isEnabled(){
         return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        User user = (User) o;
+        return Objects.equals(id, user.id)
+                && Objects.equals(name, user.name)
+                && Objects.equals(email, user.email)
+                && Objects.equals(password, user.password);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, name, email, password);
+    }
+
+    @Override
+    public String toString() {
+        return "User {" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", username='" + email + '\'' +
+                ", password='" + password + '\'' +
+                '}';
     }
 
 }

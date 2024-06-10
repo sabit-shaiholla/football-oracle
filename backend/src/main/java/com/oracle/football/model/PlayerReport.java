@@ -1,22 +1,21 @@
 package com.oracle.football.model;
 
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.util.List;
 
 @Getter
 @Setter
 @RequiredArgsConstructor
+@AllArgsConstructor
 @Entity
 @Table(name = "player_reports")
 public class PlayerReport {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long reportId;
+    private Integer reportId;
 
     @OneToOne
     @JoinColumn(name = "player_id", unique = true)

@@ -4,24 +4,24 @@ import com.oracle.football.dto.PlayerReportDto;
 import com.oracle.football.model.Player;
 import com.oracle.football.model.PlayerReport;
 import com.oracle.football.repository.PlayerReportRepository;
-import com.oracle.football.repository.PlayerRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 @Service
 public class PlayerReportService {
 
-    private final PlayerRepository playerRepository;
+    private static final Logger logger = LoggerFactory.getLogger(PlayerReportService.class);
     private final PlayerReportRepository playerReportRepository;
     private final PlayerDataService playerDataService;
     private final PlayerReportMapper playerReportMapper;
     private final AIReportService aiReportService;
 
-    public PlayerReportService(PlayerRepository playerRepository,
-                               PlayerReportRepository playerReportRepository,
-                               PlayerDataService playerDataService,
+    public PlayerReportService(PlayerReportRepository playerReportRepository,
+                               @Lazy PlayerDataService playerDataService,
                                PlayerReportMapper playerReportMapper,
                                AIReportService aiReportService) {
-        this.playerRepository = playerRepository;
         this.playerReportRepository = playerReportRepository;
         this.playerDataService = playerDataService;
         this.playerReportMapper = playerReportMapper;
@@ -29,17 +29,17 @@ public class PlayerReportService {
     }
 
     public PlayerReportDto getOrCreatePlayerReport(String playerName) {
-
-        return playerRepository.findByPlayerName(playerName)
-                .map(player -> playerReportRepository.findByPlayer(player)
-                        .map(playerReportMapper::toDto)
-                        .orElseGet(() -> playerReportMapper.toDto(createPlayerReport(player))))
-                .orElseGet(() -> playerReportMapper.toDto(createPlayerReport(playerDataService.getPlayerDataByName(playerName))));
-
-    }
-
-    private PlayerReport createPlayerReport(Player player) {
-        PlayerReport playerReport = aiReportService.generateScoutingReport(player);
-        return playerReportRepository.save(playerReport);
+        logger.debug("Request to get or create player report for: {}", playerName);
+        Player player = playerDataService.getPlayerDataByName(playerName);
+        logger.debug("Retrieved player data: {}", player);
+        PlayerReport playerReport = playerReportRepository.findByPlayer(player)
+                .orElseGet(() -> {
+                    logger.debug("Generating new player report for: {}", playerName);
+                    PlayerReport newPlayerReport = aiReportService.generateScoutingReport(player);
+                    playerReportRepository.save(newPlayerReport);
+                    logger.debug("Saved new player report for: {}", playerName);
+                    return newPlayerReport;
+                });
+        return playerReportMapper.toDto(playerReport);
     }
 }

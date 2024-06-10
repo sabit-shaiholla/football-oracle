@@ -1,10 +1,10 @@
 package com.oracle.football.dto;
 
 public record UserPlayerReviewDto(
-        Long reviewId,
+        Integer reviewId,
         String review,
         int rating,
-        Long userId,
-        Long playerId,
-        Long reportId
+        Integer userId,
+        Integer playerId,
+        Integer reportId
 ) {}
