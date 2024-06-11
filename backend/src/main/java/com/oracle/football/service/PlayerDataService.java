@@ -12,16 +12,14 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.Map;
 
 @Service
 public class PlayerDataService {
     private static final Logger logger = LoggerFactory.getLogger(PlayerDataService.class);
-    private static final String FBREF_SEARCH_URL = "https://fbref.com/en/";
-    private static int DEFAULT_AGE = 18;
+    private static final String FBREF_SEARCH_URL = "https://fbref.com/en";
+    private static final int DEFAULT_AGE = 18;
 
     private final PlayerRepository playerRepository;
 
@@ -59,12 +57,12 @@ public class PlayerDataService {
     }
 
     private String searchForPlayerUrl(String playerName) throws IOException {
-        Document searchPage = Jsoup.connect(FBREF_SEARCH_URL)
-                .data("search", playerName)
+        String searchUrl = FBREF_SEARCH_URL + "/search/search.fcgi?search=" + playerName.replace(" ", "+");
+        Document searchPage = Jsoup.connect(searchUrl)
                 .userAgent("Mozilla/5.0")
-                .post();
-        Element playerLink = searchPage.selectFirst("a[href*='/players/']");
-        return playerLink != null ? "https://fbref.com" + playerLink.attr("href") : null;
+                .followRedirects(true)
+                .get();
+        return searchPage.location();
     }
 
     private Player fetchPlayerDataByUrl(String url) throws IOException {
@@ -73,27 +71,31 @@ public class PlayerDataService {
 
         player.setPlayerPosition(extractPosition(doc));
         player.setBirthday(extractBirthday(doc));
-        player.setPlayerAge(calculateAge(player.getBirthday()));
+        player.setPlayerAge(extractAge(doc));
         player.setTeam(extractTeam(doc));
         player.setStatistics(extractStatistics(doc));
         return player;
     }
 
     private String extractPosition(Document doc) {
-        return extractText(doc, "p:contains(Position)");
+        String positionAndFooted = extractText(doc, "p:contains(Position)");
+        if (positionAndFooted.contains("▪")) {
+            return positionAndFooted.split("▪")[0].trim();
+        }
+        return positionAndFooted;
     }
 
     private String extractBirthday(Document doc) {
         return extractText(doc, "span#necro-birth");
     }
 
-    private int calculateAge(String birthday) {
-        if (birthday == null || birthday.isEmpty()) {
+    private int extractAge(Document doc) {
+        String ageWithDays = extractText(doc, "nobr");
+        if (ageWithDays.isEmpty()) {
             return DEFAULT_AGE;
         }
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMMM d, yyyy");
-        LocalDateTime birthDate = LocalDateTime.parse(birthday, formatter);
-        return LocalDateTime.now().getYear() - birthDate.getYear();
+        String age = ageWithDays.split("&nbsp;")[1].split("-")[0].trim();
+        return Integer.parseInt(age);
     }
 
     private String extractTeam(Document doc) {
@@ -113,6 +115,9 @@ public class PlayerDataService {
 
     private String extractText(Document doc, String cssQuery) {
         Element element = doc.selectFirst(cssQuery);
-        return element != null ? element.text().split(":")[1].trim() : "";
+        if (element != null) {
+            return element.text();
+        }
+        return "";
     }
 }

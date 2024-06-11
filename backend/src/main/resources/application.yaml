@@ -10,9 +10,6 @@ google:
   cloud:
     project-id: "gen-lang-client-0946890480"
     region: "europe-west3"
-gemini:
-  model:
-    endpoint-id: "endpoint-id"
 
 cors:
     allowed-origins: "*"

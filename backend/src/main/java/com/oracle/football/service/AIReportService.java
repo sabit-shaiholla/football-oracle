@@ -19,7 +19,7 @@ public class AIReportService {
 
     private static final Logger logger = LoggerFactory.getLogger(AIReportService.class);
 
-    @Value("${google.cloud.project-id")
+    @Value("${google.cloud.project-id}")
     private String projectId;
 
     @Value("${google.cloud.region}")
