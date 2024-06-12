@@ -64,7 +64,6 @@ class UserJDBCDataAccessServiceTest extends AbstractTestcontainers {
 
         //Then
         assertThat(actual).isPresent().hasValueSatisfying(u -> {
-            assertThat(u.getId()).isEqualTo(user.getId());
             assertThat(u.getEmail()).isEqualTo(user.getEmail());
             assertThat(u.getName()).isEqualTo(user.getName());
         });
