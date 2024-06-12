@@ -61,3 +61,25 @@ export const login = async (usernameAndPassword) => {
         throw e;
     }
 }
+
+export const getPlayer = async (playerName) => {
+    try {
+        return await axios.get(
+            `${import.meta.env.VITE_API_BASE_URL}/api/v1/players/${playerName}`,
+            getAuthConfig()
+        )
+    } catch (e) {
+        throw e;
+    }
+}
+
+export const getPlayerReport = async (playerName) => {
+    try {
+        return await axios.get(
+            `${import.meta.env.VITE_API_BASE_URL}/api/v1/player-report?playerName=${playerName}`,
+            getAuthConfig()
+        )
+    } catch (e) {
+        throw e;
+    }
+}

@@ -28,12 +28,14 @@ import {
     FiHome,
     FiMenu,
     FiSettings,
-    FiUsers
+    FiUsers,
+    FiOctagon
 } from 'react-icons/fi';
 import {useAuth} from "../context/AuthContext.jsx";
 
 const LinkItems = [
     {name: 'Home', route: '/dashboard', icon: FiHome},
+    {name: 'Football Oracle', route: '/dashboard/football-oracle', icon: FiOctagon},
     {name: 'Customers', route: '/dashboard/customers',  icon: FiUsers},
     {name: 'Settings', route: '/dashboard/settings', icon: FiSettings},
 ];
