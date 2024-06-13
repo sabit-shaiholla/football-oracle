@@ -10,19 +10,16 @@ import {
     Input,
     Link,
     Stack,
-    Text,
+    Text, useColorModeValue,
 } from '@chakra-ui/react';
 import {Formik, Form, useField} from "formik";
 import * as Yup from 'yup';
 import {useAuth} from "../context/AuthContext.jsx";
 import {errorNotification} from "../../services/notification.js";
 import {useNavigate} from "react-router-dom";
-import {useEffect} from "react";
+import React, {useEffect} from 'react';
 
 const MyTextInput = ({label, ...props}) => {
-    // useField() returns [formik.getFieldProps(), formik.getFieldMeta()]
-    // which we can spread on <input>. We can use field meta to show an error
-    // message if the field is invalid and it has been touched (i.e. visited)
     const [field, meta] = useField(props);
     return (
         <Box>
@@ -109,10 +106,12 @@ const Login = () => {
         if (user) {
             navigate("/dashboard/users");
         }
-    })
+    }, [user, navigate]);
+
+    const rightBgColor = useColorModeValue('gray.600', 'gray.900');
 
     return (
-        <Stack minH={'100vh'} direction={{base: 'column', md: 'row'}}>
+        <Stack minH={'100vh'} direction={{ base: 'column', md: 'row' }}>
             <Flex p={8} flex={1} alignItems={'center'} justifyContent={'center'}>
                 <Stack spacing={4} w={'full'} maxW={'md'}>
                     <Image
@@ -122,7 +121,7 @@ const Login = () => {
                         alignSelf={"center"}
                     />
                     <Heading fontSize={'2xl'} mb={15}>Sign in to your account</Heading>
-                    <LoginForm/>
+                    <LoginForm />
                     <Link color={"blue.500"} href={"/signup"}>
                         Don't have an account? Signup now.
                     </Link>
@@ -134,18 +133,18 @@ const Login = () => {
                 flexDirection={"column"}
                 alignItems={"center"}
                 justifyContent={"center"}
-                bgGradient={{sm: 'linear(to-r, blue.600, purple.600)'}}
+                bg={rightBgColor}
             >
-                <Text fontSize={"6xl"} color={'white'} fontWeight={"bold"} mb={5}>
+                <Text fontSize={"4xl"} color={'white'} fontWeight={"bold"} mb={5}>
                     <Link target={"_blank"} href={"https://github.com/sabit-shaiholla/football-oracle"}>
-                        Get more information
+                        Get more information: Football Oracle
                     </Link>
                 </Text>
                 <Image
                     alt={'Login Image'}
                     objectFit={'scale-down'}
                     src={
-                        'https://images.app.goo.gl/i1AW4fwwt89qjWnc9'
+                        'https://raw.githubusercontent.com/sabit-shaiholla/football-oracle/main/.github/images/signup-logo.jpg'
                     }
                 />
             </Flex>
