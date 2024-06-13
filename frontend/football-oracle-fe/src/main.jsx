@@ -1,6 +1,6 @@
 import React from 'react'
 import ReactDOM from 'react-dom/client'
-import Customer from './Customer.jsx'
+import User from './User.jsx'
 import {ChakraProvider} from '@chakra-ui/react'
 import { createStandaloneToast } from '@chakra-ui/toast'
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
@@ -28,8 +28,8 @@ const router = createBrowserRouter([
         element: <ProtectedRoute><Home/></ProtectedRoute>
     },
     {
-        path: "dashboard/customers",
-        element: <ProtectedRoute><Customer /></ProtectedRoute>
+        path: "dashboard/users",
+        element: <ProtectedRoute><User /></ProtectedRoute>
     },
     {
         path: "dashboard/football-oracle",

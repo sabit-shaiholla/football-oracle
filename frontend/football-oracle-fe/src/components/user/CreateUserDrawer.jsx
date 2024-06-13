@@ -9,12 +9,12 @@ import {
     DrawerOverlay,
     useDisclosure
 } from "@chakra-ui/react";
-import CreateCustomerForm from "../shared/CreateCustomerForm.jsx";
+import CreateUserForm from "../shared/CreateUserForm.jsx";
 
 const AddIcon = () => "+";
 const CloseIcon = () => "x";
 
-const CreateCustomerDrawer = ({ fetchCustomers }) => {
+const CreateUserDrawer = ({ fetchCustomers }) => {
     const { isOpen, onOpen, onClose } = useDisclosure()
     return <>
         <Button
@@ -22,16 +22,16 @@ const CreateCustomerDrawer = ({ fetchCustomers }) => {
             colorScheme={"teal"}
             onClick={onOpen}
         >
-            Create customer
+            Create user
         </Button>
         <Drawer isOpen={isOpen} onClose={onClose} size={"xl"}>
             <DrawerOverlay />
             <DrawerContent>
                 <DrawerCloseButton />
-                <DrawerHeader>Create new customer</DrawerHeader>
+                <DrawerHeader>Create new user</DrawerHeader>
 
                 <DrawerBody>
-                    <CreateCustomerForm
+                    <CreateUserForm
                         onSuccess={fetchCustomers}
                     />
                 </DrawerBody>
@@ -50,4 +50,4 @@ const CreateCustomerDrawer = ({ fetchCustomers }) => {
 
 }
 
-export default CreateCustomerDrawer;
+export default CreateUserDrawer;

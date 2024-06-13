@@ -6,7 +6,7 @@ const getAuthConfig = () => ({
     }
 })
 
-export const getCustomers = async () => {
+export const getUsers = async () => {
     try {
         return await axios.get(
             `${import.meta.env.VITE_API_BASE_URL}/api/v1/users`,
@@ -17,7 +17,7 @@ export const getCustomers = async () => {
     }
 }
 
-export const saveCustomer = async (customer) => {
+export const saveUser = async (customer) => {
     try {
         return await axios.post(
             `${import.meta.env.VITE_API_BASE_URL}/api/v1/users`,
@@ -28,7 +28,7 @@ export const saveCustomer = async (customer) => {
     }
 }
 
-export const updateCustomer = async (id, update) => {
+export const updateUser = async (id, update) => {
     try {
         return await axios.put(
             `${import.meta.env.VITE_API_BASE_URL}/api/v1/users/${id}`,
@@ -40,7 +40,7 @@ export const updateCustomer = async (id, update) => {
     }
 }
 
-export const deleteCustomer = async (id) => {
+export const deleteUser = async (id) => {
     try {
         return await axios.delete(
             `${import.meta.env.VITE_API_BASE_URL}/api/v1/users/${id}`,

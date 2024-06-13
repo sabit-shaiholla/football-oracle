@@ -8,5 +8,5 @@ public record PlayerReportDto(
         String playerStrengths,
         String playerWeaknesses,
         String playerSummary,
-        List<UserPlayerReviewDto> reviews
+        List<UserPlayerReportDto> reviews
 ) {}

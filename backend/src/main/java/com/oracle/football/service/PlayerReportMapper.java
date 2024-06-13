@@ -1,7 +1,7 @@
 package com.oracle.football.service;
 
 import com.oracle.football.dto.PlayerReportDto;
-import com.oracle.football.dto.UserPlayerReviewDto;
+import com.oracle.football.dto.UserPlayerReportDto;
 import com.oracle.football.model.PlayerReport;
 import com.oracle.football.model.UserPlayerReview;
 import org.springframework.stereotype.Component;
@@ -24,8 +24,8 @@ public class PlayerReportMapper {
         );
     }
 
-    public UserPlayerReviewDto mapToPlayerReportDto(UserPlayerReview review){
-        return new UserPlayerReviewDto(
+    public UserPlayerReportDto mapToPlayerReportDto(UserPlayerReview review){
+        return new UserPlayerReportDto(
                 review.getReviewId(),
                 review.getReview(),
                 review.getRating(),

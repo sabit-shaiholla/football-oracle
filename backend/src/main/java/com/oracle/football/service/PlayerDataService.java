@@ -12,6 +12,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -19,7 +22,6 @@ import java.util.Map;
 public class PlayerDataService {
     private static final Logger logger = LoggerFactory.getLogger(PlayerDataService.class);
     private static final String FBREF_SEARCH_URL = "https://fbref.com/en";
-    private static final int DEFAULT_AGE = 18;
 
     private final PlayerRepository playerRepository;
 
@@ -80,9 +82,9 @@ public class PlayerDataService {
     private String extractPosition(Document doc) {
         String positionAndFooted = extractText(doc, "p:contains(Position)");
         if (positionAndFooted.contains("▪")) {
-            return positionAndFooted.split("▪")[0].trim();
+            positionAndFooted = positionAndFooted.split("▪")[0].trim();
         }
-        return positionAndFooted;
+        return positionAndFooted.replace("Position:", "").trim();
     }
 
     private String extractBirthday(Document doc) {
@@ -90,16 +92,19 @@ public class PlayerDataService {
     }
 
     private int extractAge(Document doc) {
-        String ageWithDays = extractText(doc, "nobr");
-        if (ageWithDays.isEmpty()) {
-            return DEFAULT_AGE;
-        }
-        String age = ageWithDays.split("&nbsp;")[1].split("-")[0].trim();
-        return Integer.parseInt(age);
+        String birthday = extractBirthday(doc);
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMMM d, yyyy");
+        LocalDate birthDate = LocalDate.parse(birthday, formatter);
+        LocalDate currentDate = LocalDate.now();
+        return (int) ChronoUnit.YEARS.between(birthDate, currentDate);
     }
 
     private String extractTeam(Document doc) {
-        return extractText(doc, "p:contains(Club)");
+        String team = extractText(doc, "p:contains(Club)");
+        if (team.contains(":")) {
+            return team.split(":")[1].trim();
+        }
+        return team.replace("Club:", "").trim();
     }
 
     private Map<String, String> extractStatistics(Document doc) {

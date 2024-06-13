@@ -11,9 +11,9 @@ import {
 } from '@chakra-ui/react';
 
 import {useRef} from 'react'
-import {deleteCustomer} from "../../services/client.js";
+import {deleteUser} from "../../services/client.js";
 import {errorNotification, successNotification} from "../../services/notification.js";
-import UpdateCustomerDrawer from "./UpdateCustomerDrawer.jsx";
+import UpdateUserDrawer from "./UpdateUserDrawer.jsx";
 
 export default function CardWithImage({id, name, email, fetchCustomers}) {
 
@@ -42,7 +42,7 @@ export default function CardWithImage({id, name, email, fetchCustomers}) {
 
                 <Stack direction={'row'} justify={'center'} spacing={6} p={4}>
                     <Stack>
-                        <UpdateCustomerDrawer
+                        <UpdateUserDrawer
                             initialValues={{ name, email }}
                             customerId={id}
                             fetchCustomers={fetchCustomers}
@@ -72,7 +72,7 @@ export default function CardWithImage({id, name, email, fetchCustomers}) {
                             <AlertDialogOverlay>
                                 <AlertDialogContent>
                                     <AlertDialogHeader fontSize='lg' fontWeight='bold'>
-                                        Delete Customer
+                                        Delete User
                                     </AlertDialogHeader>
 
                                     <AlertDialogBody>
@@ -84,10 +84,10 @@ export default function CardWithImage({id, name, email, fetchCustomers}) {
                                             Cancel
                                         </Button>
                                         <Button colorScheme='red' onClick={() => {
-                                            deleteCustomer(id).then(res => {
+                                            deleteUser(id).then(res => {
                                                 console.log(res)
                                                 successNotification(
-                                                    'Customer deleted',
+                                                    'User deleted',
                                                     `${name} was successfully deleted`
                                                 )
                                                 fetchCustomers();

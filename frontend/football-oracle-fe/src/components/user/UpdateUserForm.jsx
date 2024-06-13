@@ -1,7 +1,7 @@
 import {Form, Formik, useField} from 'formik';
 import * as Yup from 'yup';
 import {Alert, AlertIcon, Box, Button, FormLabel, Input, Stack} from "@chakra-ui/react";
-import {updateCustomer} from "../../services/client.js";
+import {updateUser} from "../../services/client.js";
 import {errorNotification, successNotification} from "../../services/notification.js";
 
 const MyTextInput = ({label, ...props}) => {
@@ -20,7 +20,7 @@ const MyTextInput = ({label, ...props}) => {
     );
 };
 
-const UpdateCustomerForm = ({fetchCustomers, initialValues, customerId}) => {
+const UpdateUserForm = ({fetchCustomers: fetchUsers, initialValues, customerId: userId}) => {
     return (
         <>
             <Formik
@@ -33,16 +33,16 @@ const UpdateCustomerForm = ({fetchCustomers, initialValues, customerId}) => {
                         .email('Must be 20 characters or less')
                         .required('Required'),
                 })}
-                onSubmit={(updatedCustomer, {setSubmitting}) => {
+                onSubmit={(updatedUser, {setSubmitting}) => {
                     setSubmitting(true);
-                    updateCustomer(customerId, updatedCustomer)
+                    updateUser(userId, updatedUser)
                         .then(res => {
                             console.log(res);
                             successNotification(
-                                "Customer updated",
-                                `${updatedCustomer.name} was successfully updated`
+                                "User updated",
+                                `${updatedUser.name} was successfully updated`
                             )
-                            fetchCustomers();
+                            fetchUsers();
                         }).catch(err => {
                         console.log(err);
                         errorNotification(
@@ -61,14 +61,14 @@ const UpdateCustomerForm = ({fetchCustomers, initialValues, customerId}) => {
                                 label="Name"
                                 name="name"
                                 type="text"
-                                placeholder="Jane"
+                                placeholder="Bruce Wayne"
                             />
 
                             <MyTextInput
                                 label="Email Address"
                                 name="email"
                                 type="email"
-                                placeholder="jane@formik.com"
+                                placeholder="brucewayne@gmail.com"
                             />
 
                             <Button disabled={!(isValid && dirty) || isSubmitting} type="submit">Submit</Button>
@@ -80,4 +80,4 @@ const UpdateCustomerForm = ({fetchCustomers, initialValues, customerId}) => {
     );
 };
 
-export default UpdateCustomerForm;
+export default UpdateUserForm;

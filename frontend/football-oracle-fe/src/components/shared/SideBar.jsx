@@ -36,7 +36,7 @@ import {useAuth} from "../context/AuthContext.jsx";
 const LinkItems = [
     {name: 'Home', route: '/dashboard', icon: FiHome},
     {name: 'Football Oracle', route: '/dashboard/football-oracle', icon: FiOctagon},
-    {name: 'Customers', route: '/dashboard/customers',  icon: FiUsers},
+    {name: 'Users', route: '/dashboard/users',  icon: FiUsers},
     {name: 'Settings', route: '/dashboard/settings', icon: FiSettings},
 ];
 
@@ -133,7 +133,7 @@ const NavItem = ({icon, route, children, ...rest}) => {
 };
 
 const MobileNav = ({onOpen, ...rest}) => {
-    const { logOut, customer } = useAuth()
+    const { logOut, customer: user } = useAuth()
     return (
         <Flex
             ml={{base: 0, md: 60}}
@@ -186,8 +186,8 @@ const MobileNav = ({onOpen, ...rest}) => {
                                     alignItems="flex-start"
                                     spacing="1px"
                                     ml="2">
-                                    <Text fontSize="sm">{customer?.username}</Text>
-                                    {customer?.roles.map((role, id) => (
+                                    <Text fontSize="sm">{user?.username}</Text>
+                                    {user?.roles.map((role, id) => (
                                         <Text key={id} fontSize="xs" color="gray.600">
                                             {role}
                                         </Text>
