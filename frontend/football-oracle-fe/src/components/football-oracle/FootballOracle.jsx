@@ -14,15 +14,21 @@ import {
     Tr,
     Th,
     Td,
-    useColorModeValue
+    useColorModeValue, NumberInputField, NumberInput, Textarea
 } from '@chakra-ui/react';
-import { getPlayer, getPlayerReport } from '../../services/client.js';
+import { getPlayer, getPlayerReport, createReview, updateReview, deleteReview, getPlayerReviewByUser } from '../../services/client.js';
+import { successNotification, errorNotification } from "../../services/notification.js";
 import SidebarWithHeader from '../shared/SideBar.jsx';
 
 const FootballOracle = () => {
     const [playerName, setPlayerName] = useState('');
     const [playerData, setPlayerData] = useState(null);
     const [playerReport, setPlayerReport] = useState(null);
+    const [review, setReview] = useState('');
+    const [rating, setRating] = useState('');
+    const [originalReview, setOriginalReview] = useState('');
+    const [originalRating, setOriginalRating] = useState('');
+    const [reviewId, setReviewId] = useState(null);
     const [error, setError] = useState('');
 
     const handleInputChange = (e) => {
@@ -37,11 +43,141 @@ const FootballOracle = () => {
             const playerResponse = await getPlayer(playerName);
             setPlayerData(playerResponse.data);
 
+            try {
+                const playerReviewResponse = await getPlayerReviewByUser(playerResponse.data.playerId);
+                if (playerReviewResponse.data) {
+                    setReview(playerReviewResponse.data.review);
+                    console.log('Review after getPlayerReviewByUser:', playerReviewResponse.data.review);
+                    setRating(String(playerReviewResponse.data.rating)); // Convert rating to string
+                    setOriginalReview(playerReviewResponse.data.review);
+                    setOriginalRating(String(playerReviewResponse.data.rating)); // Convert rating to string
+                    setReviewId(playerReviewResponse.data.reviewId || playerReviewResponse.data.id); // Use reviewId or id from response
+                    console.log('Review ID after getPlayerReviewByUser:', playerReviewResponse.data.reviewId || playerReviewResponse.data.id);
+                } else {
+                    setReview('');
+                    setRating('');
+                    setOriginalReview('');
+                    setOriginalRating('');
+                    setReviewId(null);
+                }
+            } catch (reviewError) {
+                if (reviewError.response && reviewError.response.status === 404) {
+                    setReview('');
+                    setRating('');
+                    setOriginalReview('');
+                    setOriginalRating('');
+                    setReviewId(null);
+                } else {
+                    throw reviewError;
+                }
+            }
+
             setError('');
         } catch (e) {
             setError('Failed to fetch player data. Please try again.');
             setPlayerData(null);
             setPlayerReport(null);
+            setReview('');
+            setRating('');
+            setOriginalReview('');
+            setOriginalRating('');
+            setReviewId(null);
+        }
+    };
+
+    const handleReviewChange = (e) => {
+        setReview(e.target.value);
+    };
+
+    const handleRatingChange = (value) => {
+        setRating(String(value));
+    };
+
+    const handleCreateReview = async () => {
+        console.log('Creating review...');
+        if (review.trim() === '' || rating === '') {
+            errorNotification('Validation Error', 'Review and rating fields cannot be empty');
+            return;
+        }
+        const ratingValue = parseInt(rating, 10);
+        if (isNaN(ratingValue) || ratingValue < 1 || ratingValue > 10) {
+            errorNotification('Validation Error', 'Please provide a rating between 1 and 10');
+            return;
+        }
+        try {
+            const reviewRequest = {
+                playerId: playerData.playerId,
+                review: review,
+                rating: ratingValue,
+            };
+            console.log('Review request:', reviewRequest);
+            const response = await createReview(reviewRequest);
+            setReviewId(response.data.id);
+            console.log('Review ID after createReview:', response.data.id);
+            setOriginalReview(review);
+            setOriginalRating(String(ratingValue)); // Store rating as string
+            successNotification('Success', 'Review created successfully');
+        } catch (e) {
+            console.error(e);
+            errorNotification('Error', 'Failed to create review. Please try again.');
+        }
+    };
+
+    const handleUpdateReview = async () => {
+        console.log('Updating review...');
+        if (review.trim() === '' || rating === '') {
+            errorNotification('Validation Error', 'Review and rating fields cannot be empty');
+            return;
+        }
+        const ratingValue = parseInt(rating, 10);
+        if (isNaN(ratingValue) || ratingValue < 1 || ratingValue > 10) {
+            errorNotification('Validation Error', 'Please provide a rating between 1 and 10');
+            return;
+        }
+        if (review === originalReview && String(ratingValue) === originalRating) {
+            errorNotification('Validation Error', 'No data is changed to update');
+            return;
+        }
+        if (!reviewId) {
+            errorNotification('Error', 'No review to update');
+            return;
+        }
+        try {
+            const reviewRequest = {
+                playerId: playerData.playerId,
+                review: review,
+                rating: ratingValue,
+            };
+            console.log('Review request:', reviewRequest);
+            console.log('Review ID for update:', reviewId);
+            await updateReview(reviewId, reviewRequest);
+            setOriginalReview(review);
+            setOriginalRating(String(ratingValue)); // Store rating as string
+            successNotification('Success', 'Review updated successfully');
+        } catch (e) {
+            console.error(e);
+            errorNotification('Error', 'Failed to update review. Please try again.');
+        }
+    };
+
+    const handleDeleteReview = async () => {
+        console.log('Deleting review...');
+        if (reviewId) {
+            try {
+                console.log('Review ID for delete:', reviewId);
+                await deleteReview(reviewId);
+                setReview('');
+                setRating('');
+                setOriginalReview('');
+                setOriginalRating('');
+                setReviewId(null);
+                successNotification('Success', 'Review deleted successfully');
+            } catch (e) {
+                console.error(e);
+                errorNotification('Error', 'Failed to delete review. Please try again.');
+            }
+        } else {
+            errorNotification('Error', 'No review to delete');
         }
     };
 
@@ -120,6 +256,30 @@ const FootballOracle = () => {
                                     <Heading as="h3" size="sm">Summary</Heading>
                                     <Text whiteSpace="pre-wrap">{playerReport.playerSummary}</Text>
                                 </Box>
+                                <Box mt={6}>
+                                    <Heading as="h3" size="sm" mb={2}>Review</Heading>
+                                    <Textarea
+                                        placeholder="Write your review here..."
+                                        value={review}
+                                        onChange={handleReviewChange}
+                                    />
+                                </Box>
+                                <Box mt={4}>
+                                    <Heading as="h3" size="sm" mb={2}>Rating</Heading>
+                                    <NumberInput
+                                        max={10}
+                                        min={1}
+                                        value={parseInt(rating, 10)} // Convert to number for NumberInput
+                                        onChange={handleRatingChange}
+                                    >
+                                        <NumberInputField />
+                                    </NumberInput>
+                                </Box>
+                                <Flex mt={4} justify="space-between">
+                                    <Button colorScheme="green" onClick={handleCreateReview}>Create Review</Button>
+                                    <Button colorScheme="blue" onClick={handleUpdateReview}>Update Review</Button>
+                                    <Button colorScheme="red" onClick={handleDeleteReview}>Delete Review</Button>
+                                </Flex>
                             </Box>
                         </GridItem>
                     )}
