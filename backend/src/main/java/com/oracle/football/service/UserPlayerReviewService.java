@@ -3,6 +3,7 @@ package com.oracle.football.service;
 import com.oracle.football.dto.UserPlayerReviewDto;
 import com.oracle.football.dto.UserPlayerReviewRequest;
 import com.oracle.football.exception.DuplicateResourceException;
+import com.oracle.football.exception.ResourceNotFoundException;
 import com.oracle.football.model.Player;
 import com.oracle.football.model.PlayerReport;
 import com.oracle.football.model.User;
@@ -80,12 +81,12 @@ public class UserPlayerReviewService {
 
     public UserPlayerReviewDto getPlayerReviewByUser(Integer playerId, String username){
         User user = userRepository.findByEmail(username)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
 
         UserPlayerReview review = userPlayerReviewRepository.findAllByUser(user).stream()
                 .filter(r -> r.getPlayer().getPlayerId().equals(playerId))
                 .findFirst()
-                .orElseThrow(() -> new RuntimeException("Review not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Review not found"));
 
         return new UserPlayerReviewDto(
                 review.getReviewId(),
