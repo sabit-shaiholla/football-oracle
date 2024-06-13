@@ -6,12 +6,12 @@ import {
 } from '@chakra-ui/react';
 import SidebarWithHeader from "./components/shared/SideBar.jsx";
 import { useEffect, useState } from 'react';
-import { getCustomers } from "./services/client.js";
-import CardWithImage from "./components/customer/CustomerCard.jsx";
-import CreateCustomerDrawer from "./components/customer/CreateCustomerDrawer.jsx";
+import { getUsers } from "./services/client.js";
+import CardWithImage from "./components/user/UserCard.jsx";
+import CreateUserDrawer from "./components/user/CreateUserDrawer.jsx";
 import {errorNotification} from "./services/notification.js";
 
-const Customer = () => {
+const User = () => {
 
     const [customers, setCustomers] = useState([]);
     const [loading, setLoading] = useState(false);
@@ -19,7 +19,7 @@ const Customer = () => {
 
     const fetchCustomers = () => {
         setLoading(true);
-        getCustomers().then(res => {
+        getUsers().then(res => {
             setCustomers(res.data)
         }).catch(err => {
             setError(err.response.data.message)
@@ -53,7 +53,7 @@ const Customer = () => {
     if (err) {
         return (
             <SidebarWithHeader>
-                <CreateCustomerDrawer
+                <CreateUserDrawer
                     fetchCustomers={fetchCustomers}
                 />
                 <Text mt={5}>Ooops there was an error</Text>
@@ -64,7 +64,7 @@ const Customer = () => {
     if(customers.length <= 0) {
         return (
             <SidebarWithHeader>
-                <CreateCustomerDrawer
+                <CreateUserDrawer
                     fetchCustomers={fetchCustomers}
                 />
                 <Text mt={5}>No customers available</Text>
@@ -74,7 +74,7 @@ const Customer = () => {
 
     return (
         <SidebarWithHeader>
-            <CreateCustomerDrawer
+            <CreateUserDrawer
                 fetchCustomers={fetchCustomers}
             />
             <Wrap justify={"center"} spacing={"30px"}>
@@ -92,4 +92,4 @@ const Customer = () => {
     )
 }
 
-export default Customer;
+export default User;
