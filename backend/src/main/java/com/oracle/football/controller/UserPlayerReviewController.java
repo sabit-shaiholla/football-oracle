@@ -41,6 +41,13 @@ public class UserPlayerReviewController {
         return ResponseEntity.ok(reviews);
     }
 
+    @GetMapping("/player/{playerId}")
+    public ResponseEntity<UserPlayerReviewDto> getReviewByPlayerId(@PathVariable Integer playerId,
+                                                                        @AuthenticationPrincipal UserDetails userDetails) {
+        UserPlayerReviewDto review = userPlayerReviewService.getPlayerReviewByUser(playerId, userDetails.getUsername());
+        return ResponseEntity.ok(review);
+    }
+
     @DeleteMapping("/{reviewId}")
     public ResponseEntity<Void> deleteReview(@PathVariable Integer reviewId) {
         userPlayerReviewService.deleteReview(reviewId);

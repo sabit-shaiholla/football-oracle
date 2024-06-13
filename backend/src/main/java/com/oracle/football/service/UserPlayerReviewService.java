@@ -78,6 +78,25 @@ public class UserPlayerReviewService {
                 .collect(Collectors.toList());
     }
 
+    public UserPlayerReviewDto getPlayerReviewByUser(Integer playerId, String username){
+        User user = userRepository.findByEmail(username)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        UserPlayerReview review = userPlayerReviewRepository.findAllByUser(user).stream()
+                .filter(r -> r.getPlayer().getPlayerId().equals(playerId))
+                .findFirst()
+                .orElseThrow(() -> new RuntimeException("Review not found"));
+
+        return new UserPlayerReviewDto(
+                review.getReviewId(),
+                user.getUsername(),
+                review.getPlayer().getPlayerId(),
+                review.getPlayer().getPlayerName(),
+                review.getPlayerReport().getReportId(),
+                review.getReview(),
+                review.getRating());
+    }
+
     public UserPlayerReviewDto updateReview(Integer reviewId,
                                             UserPlayerReviewRequest reviewRequest,
                                             String username) {
