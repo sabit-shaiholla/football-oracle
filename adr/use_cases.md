@@ -16,18 +16,18 @@
   1. User enters a player’s name in the search bar.
   2. System displays a list of players matching the search criteria.
 
-### 3. View Scouting Report
+### 3. View Player Analytics Report
 * Actors: Registered User, Guest
 * Description: Users view AI-generated reports for a selected player.
 * Steps:
   1. User selects a player from the search results.
-  2. System displays the scouting report for the selected player.
+  2. System displays the analytics report for the selected player.
 
-### 4. Rate and Review Scouting Report
+### 4. Rate and Review Player Analytics
 * Actors: Registered User
 * Description: Registered users rate and review scouting reports.
 * Steps:
-  1. User views a scouting report.
+  1. User views a player analytics report.
   2. User submits a rating and/or review.
   3. System updates the report with the user’s feedback.
   
@@ -63,8 +63,8 @@ package "Football Oracle System" {
     usecase "Enter player’s name in search bar" as UC5
     usecase "Display list of players matching search criteria" as UC6
     usecase "Select player from search results" as UC7
-    usecase "Display scouting report for selected player" as UC8
-    usecase "View scouting report" as UC9
+    usecase "Display analytics report for selected player" as UC8
+    usecase "View player analytics report" as UC9
     usecase "Submit rating and/or review" as UC10
     usecase "Update report with user’s feedback" as UC11
     usecase "Access profile management page" as UC12

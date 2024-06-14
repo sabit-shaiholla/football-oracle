@@ -13,8 +13,8 @@ package "Football Oracle System" {
     usecase "Enter player’s name in search bar" as UC5
     usecase "Display list of players matching search criteria" as UC6
     usecase "Select player from search results" as UC7
-    usecase "Display scouting report for selected player" as UC8
-    usecase "View scouting report" as UC9
+    usecase "Display analytics report for selected player" as UC8
+    usecase "View player analytics report" as UC9
     usecase "Submit rating and/or review" as UC10
     usecase "Update report with user’s feedback" as UC11
     usecase "Access profile management page" as UC12

@@ -5,7 +5,7 @@ top to bottom direction
 skinparam linetype ortho
 
 class Player {
-  - playerId: Long
+  - playerId: Integer
   - playerName: String
   - playerPosition: String
   - playerAge: int
@@ -17,7 +17,7 @@ class Player {
 }
 
 class PlayerReport {
-  - reportId: Long
+  - reportId: Integer
   - playerStrengths: String
   - playerWeaknesses: String
   - playerSummary: String
@@ -26,7 +26,7 @@ class PlayerReport {
 }
 
 class User {
-  - id: Long
+  - id: Integer
   - name: String
   - password: String
   - email: String
@@ -34,7 +34,7 @@ class User {
 }
 
 class UserPlayerReview {
-  - reviewId: Long
+  - reviewId: Integer
   - review: String
   - rating: int
   - player: Player
