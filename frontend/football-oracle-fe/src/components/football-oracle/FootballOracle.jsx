@@ -47,12 +47,10 @@ const FootballOracle = () => {
                 const playerReviewResponse = await getPlayerReviewByUser(playerResponse.data.playerId);
                 if (playerReviewResponse.data) {
                     setReview(playerReviewResponse.data.review);
-                    console.log('Review after getPlayerReviewByUser:', playerReviewResponse.data.review);
-                    setRating(String(playerReviewResponse.data.rating)); // Convert rating to string
+                    setRating(String(playerReviewResponse.data.rating));
                     setOriginalReview(playerReviewResponse.data.review);
-                    setOriginalRating(String(playerReviewResponse.data.rating)); // Convert rating to string
-                    setReviewId(playerReviewResponse.data.reviewId || playerReviewResponse.data.id); // Use reviewId or id from response
-                    console.log('Review ID after getPlayerReviewByUser:', playerReviewResponse.data.reviewId || playerReviewResponse.data.id);
+                    setOriginalRating(String(playerReviewResponse.data.rating));
+                    setReviewId(playerReviewResponse.data.reviewId);
                 } else {
                     setReview('');
                     setRating('');
@@ -94,7 +92,6 @@ const FootballOracle = () => {
     };
 
     const handleCreateReview = async () => {
-        console.log('Creating review...');
         if (review.trim() === '' || rating === '') {
             errorNotification('Validation Error', 'Review and rating fields cannot be empty');
             return;
@@ -110,21 +107,17 @@ const FootballOracle = () => {
                 review: review,
                 rating: ratingValue,
             };
-            console.log('Review request:', reviewRequest);
             const response = await createReview(reviewRequest);
-            setReviewId(response.data.id);
-            console.log('Review ID after createReview:', response.data.id);
+            setReviewId(response.data.reviewId);
             setOriginalReview(review);
             setOriginalRating(String(ratingValue)); // Store rating as string
             successNotification('Success', 'Review created successfully');
         } catch (e) {
-            console.error(e);
             errorNotification('Error', 'Failed to create review. Please try again.');
         }
     };
 
     const handleUpdateReview = async () => {
-        console.log('Updating review...');
         if (review.trim() === '' || rating === '') {
             errorNotification('Validation Error', 'Review and rating fields cannot be empty');
             return;
@@ -148,23 +141,18 @@ const FootballOracle = () => {
                 review: review,
                 rating: ratingValue,
             };
-            console.log('Review request:', reviewRequest);
-            console.log('Review ID for update:', reviewId);
             await updateReview(reviewId, reviewRequest);
             setOriginalReview(review);
             setOriginalRating(String(ratingValue)); // Store rating as string
             successNotification('Success', 'Review updated successfully');
         } catch (e) {
-            console.error(e);
             errorNotification('Error', 'Failed to update review. Please try again.');
         }
     };
 
     const handleDeleteReview = async () => {
-        console.log('Deleting review...');
         if (reviewId) {
             try {
-                console.log('Review ID for delete:', reviewId);
                 await deleteReview(reviewId);
                 setReview('');
                 setRating('');
@@ -173,7 +161,6 @@ const FootballOracle = () => {
                 setReviewId(null);
                 successNotification('Success', 'Review deleted successfully');
             } catch (e) {
-                console.error(e);
                 errorNotification('Error', 'Failed to delete review. Please try again.');
             }
         } else {
