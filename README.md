@@ -1,10 +1,10 @@
-# Football Oracle: Your AI-Powered Scouting Companion
+# Football Oracle: Your AI-Powered Player Analytics tool
 
 Football Oracle is a cutting-edge web application that transforms the way football enthusiasts and professionals gather player insights. By leveraging advanced AI and natural language processing, Football Oracle provides comprehensive, data-driven football player analytics on demand.  Whether you're a football fan, a fantasy football manager, or a just a freak loving this game as I do, Football Oracle empowers you with the knowledge you need and elevate your understanding of this beautiful game.
 
 ## Key Features
 
-* Intuitive Player Search: Easily find detailed scouting reports on any football player, from rising stars to seasoned veterans.
+* Intuitive Player Search: Easily find detailed player analytics reports on any football player, from rising stars to seasoned veterans.
 * AI-Generated Analytics: Receive comprehensive player analyses, including strengths, weaknesses, and potential impact on the team.
 * Personalized Ratings and Reviews: Share your own expert opinions by rating and commenting on reports, fostering a vibrant community of football enthusiasts.
 * Robust User Profiles: Manage your personal information, track your rating history, and update your reviews with ease.
@@ -91,7 +91,7 @@ Please see the [Entity Relationship Diagram](adr/ER_diagram.md) for detailed inf
 4. Data Fetching Logic
 * Database Check: The Back-End checks the PostgreSQL database for player data.
 * Fetch from WebPage: If data is not present, it fetches data from the WebPage (FBREF.com).
-* Fetch from Gemini Pro API: After getting data from the WebPage, it requests player reports via external API. 
+* Fetch from Gemini Pro API: After getting data from the WebPage, it requests player analytics reports via external API. 
 * Save to Database: The fetched data and reports are saved in the database for future queries.
 5. External API Interaction
 * The Back-End interacts with Gemini Pro API to fetch and process player data when not found in the database.
