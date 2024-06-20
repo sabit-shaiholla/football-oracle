@@ -1,15 +1,37 @@
+spring:
+  datasource:
+    url: ${SPRING_DATASOURCE_URL}
+    username: ${SPRING_DATASOURCE_USERNAME}
+    password: ${SPRING_DATASOURCE_PASSWORD}
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        format_sql: true
+  main:
+    web-application-type: servlet
+  servlet:
+    multipart:
+      max-file-size: 1MB
+      max-request-size: 10MB
+  codec:
+    max-in-memory-size: 10MB
+
 server:
   port: 8080
   error:
     include-message: always
 
 jwt:
-    secret: "foobar_123456789_batman_123456789_ironman_123456789"
+  secret: ${JWT_SECRET}
 
 google:
   cloud:
-    project-id: "gen-lang-client-0946890480"
-    region: "europe-west3"
+    project-id: ${GOOGLE_CLOUD_PROJECT_ID}
+    region: ${GOOGLE_CLOUD_REGION}
 
 cors:
     allowed-origins: "*"
@@ -32,26 +54,3 @@ logging:
     com.oracle.football: DEBUG
   file:
     name: logs/app.log
-
-
-spring:
-  datasource:
-    url: jdbc:postgresql://localhost:5432/fb-oracle-db
-    username: postgres
-    password: postgres
-  jpa:
-    hibernate:
-      ddl-auto: update
-    show-sql: true
-    properties:
-      hibernate:
-        dialect: org.hibernate.dialect.PostgreSQLDialect
-        format_sql: true
-  main:
-    web-application-type: servlet
-  servlet:
-    multipart:
-      max-file-size: 1MB
-      max-request-size: 10MB
-  codec:
-    max-in-memory-size: 10MB
