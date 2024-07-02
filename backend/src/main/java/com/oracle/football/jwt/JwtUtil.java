@@ -19,7 +19,7 @@ import static java.time.temporal.ChronoUnit.DAYS;
 public class JwtUtil {
 
     @Value("${jwt.secret}")
-    private String SECRET_KEY;
+    private String secretKey;
 
     public String issueToken(String subject) {
         return issueToken(subject, Map.of());
@@ -65,7 +65,7 @@ public class JwtUtil {
     }
 
     private Key getSigningKey() {
-        return Keys.hmacShaKeyFor(SECRET_KEY.getBytes());
+        return Keys.hmacShaKeyFor(secretKey.getBytes());
     }
 
     public boolean isTokenValid(String jwt, String username) {

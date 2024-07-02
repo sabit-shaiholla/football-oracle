@@ -82,7 +82,6 @@ public class AIReportService {
             logger.debug("Parsed player report: {}", playerReport);
             return playerReport;
         } catch (IOException e) {
-            logger.error("Error while calling Gemini Pro API", e);
             throw new RuntimeException("Error while calling Gemini Pro API", e);
         }
     }
