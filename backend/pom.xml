@@ -26,6 +26,11 @@
 		<httpclient5.version>5.3.1</httpclient5.version>
 		<vertexai.version>1.5.0</vertexai.version>
 		<javafaker.version>1.0.2</javafaker.version>
+		<mockito-inline.version>5.2.0</mockito-inline.version>
+		<testcontainers.version>1.17.6</testcontainers.version>
+		<spring-dotenv.version>4.0.0</spring-dotenv.version>
+		<sonar-maven-plugin.version>4.0.0.4121</sonar-maven-plugin.version>
+		<jacoco-maven-plugin.version>0.8.12</jacoco-maven-plugin.version>
 	</properties>
 
 	<dependencies>
@@ -147,35 +152,41 @@
 		<dependency>
 			<groupId>org.mockito</groupId>
 			<artifactId>mockito-inline</artifactId>
-			<version>5.2.0</version>
+			<version>${mockito-inline.version}</version>
 			<scope>test</scope>
 		</dependency>
 
 		<dependency>
 			<groupId>org.testcontainers</groupId>
 			<artifactId>junit-jupiter</artifactId>
-			<version>1.17.6</version>
+			<version>${testcontainers.version}</version>
 			<scope>test</scope>
 		</dependency>
 
 		<dependency>
 			<groupId>org.testcontainers</groupId>
 			<artifactId>testcontainers</artifactId>
-			<version>1.17.6</version>
+			<version>${testcontainers.version}</version>
 			<scope>test</scope>
 		</dependency>
 
 		<dependency>
 			<groupId>org.testcontainers</groupId>
 			<artifactId>postgresql</artifactId>
-			<version>1.17.6</version>
+			<version>${testcontainers.version}</version>
 			<scope>test</scope>
 		</dependency>
 
 		<dependency>
 			<groupId>me.paulschwarz</groupId>
 			<artifactId>spring-dotenv</artifactId>
-			<version>4.0.0</version>
+			<version>${spring-dotenv.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.sonarsource.scanner.maven</groupId>
+			<artifactId>sonar-maven-plugin</artifactId>
+			<version>${sonar-maven-plugin.version}</version>
 		</dependency>
 
 	</dependencies>
@@ -185,6 +196,30 @@
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
+			</plugin>
+			<plugin>
+				<groupId>org.jacoco</groupId>
+				<artifactId>jacoco-maven-plugin</artifactId>
+				<version>${jacoco-maven-plugin.version}</version>
+				<executions>
+					<execution>
+						<id>prepare-agent</id>
+						<goals>
+							<goal>prepare-agent</goal>
+						</goals>
+					</execution>
+					<execution>
+						<id>report</id>
+						<goals>
+							<goal>report</goal>
+						</goals>
+						<configuration>
+							<formats>
+								<format>XML</format>
+							</formats>
+						</configuration>
+					</execution>
+				</executions>
 			</plugin>
 		</plugins>
 	</build>
