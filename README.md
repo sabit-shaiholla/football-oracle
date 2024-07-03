@@ -2,7 +2,7 @@
 
 Football Oracle is a cutting-edge web application that transforms the way football enthusiasts and professionals gather player insights. By leveraging advanced AI and natural language processing, Football Oracle provides comprehensive, data-driven football player analytics on demand.  Whether you're a football fan, a fantasy football manager, or a just a freak loving this game as I do, Football Oracle empowers you with the knowledge you need and elevate your understanding of this beautiful game.
 
-## Key Features
+## Key User Features
 
 * Intuitive Player Search: Easily find detailed player analytics reports on any football player, from rising stars to seasoned veterans.
 * AI-Generated Analytics: Receive comprehensive player analyses, including strengths, weaknesses, and potential impact on the team.
@@ -17,6 +17,18 @@ Football Oracle is a cutting-edge web application that transforms the way footba
 3. Explore Scouting Reports: Dive into AI-generated analytics that provide in-depth analysis of player attributes, statistics, and performance.
 4. Rate and Review: Share your thoughts by rating reports and leaving comments, contributing to a growing knowledge base for the community.
 5. Connect with Others: Browse the profiles of other users to discover new players and learn from their insights.
+
+## Key Technical Features
+
+* Spring Boot Framework: Utilizes the Spring Boot framework for building a scalable and production-ready application.
+* PostgreSQL Database: Manages football-related data using a PostgreSQL database, ensuring reliable data storage and retrieval.
+* JWT Authentication: Implements JSON Web Token (JWT) for secure authentication and authorization.
+* Hibernate ORM: Leverages Hibernate for efficient and transparent object-relational mapping.
+* RESTful APIs: Provides a set of RESTful APIs for seamless integration with other systems and services.
+* SonarQube Integration: Continuously inspects code quality using SonarQube, ensuring adherence to best practices and standards.
+* Flyway Migration: Uses Flyway for database version control, allowing easy management of database schema changes.
+* Logging: Implements comprehensive logging using various logging frameworks to facilitate monitoring and debugging.
+* Docker Support: Easily deployable using Docker, with a docker-compose.yml file for setting up the application and SonarQube services.
 
 ## Functional and Non-Functional Requirements
 Please see the [Functional and Non-Functional Requirements](adr/FR_and_NFR_list.md) for detailed information on the features and performance goals of Football Oracle.
@@ -102,6 +114,70 @@ Please see the [Entity Relationship Diagram](adr/ER_diagram.md) for detailed inf
 * Back-End: Spring Boot (Java)
 * Database: PostgreSQL
 * External API: Gemini Pro API (Google)
+
+## Installation
+
+### Pre-requisites
+* Java 17: Ensure you have JDK 17 installed.
+* Maven: Ensure you have Maven installed.
+* Docker: Ensure you have Docker installed.
+* Node.js and npm: Ensure you have Node.js and npm installed. You can download them from [Node.js official site](https://nodejs.org/en).
+
+To get started with the Football Oracle project, follow these steps:
+
+1. Clone the repository:
+```
+git clone https://github.com/sabit-shaiholla/football-oracle.git
+cd football-oracle
+```
+2. Set up environment variables:
+Create a .env file in the root directory with the necessary environment variables.
+```
+JWT_SECRET=your_jwt_secret (at least 256 bits)
+GOOGLE_CLOUD_PROJECT_ID=your_project_id (Google Cloud Project ID)
+GOOGLE_CLOUD_REGION=your_region (Google Cloud Region)
+SPRING_DATASOURCE_URL=your_postgres_url (PostgreSQL URL)
+SPRING_DATASOURCE_USERNAME=your_postgres_username (PostgreSQL Username)
+SPRING_DATASOURCE_PASSWORD=your_postgres_password (PostgreSQL Password)
+SONAR_TOKEN=your_sonar_token (SonarQube token)
+```
+3. Start PostgreSQL and SonarQube:
+Use Docker Compose to start the PostgreSQL and SonarQube services:
+```
+docker-compose up -d
+```
+4. Build and run the back-end application:
+Use Maven to build and run the application:
+```
+mvn clean install
+mvn spring-boot:run
+```
+This command will start the PostgreSQL database and SonarQube services in detached mode.
+5. Navigate to the front-end directory:
+```
+cd frontend/football-oracle-fe
+```
+6. Install npm dependencies:
+Use npm to install the necessary dependencies for the front-end:
+```
+npm install
+```
+7. Run the front-end application:
+Start the front-end application using the following command:
+```
+npm run dev
+```
+8. Run SonarQube:
+Ensure SonarQube is running and then execute:
+```
+mvn sonar:sonar -Dsonar.token=SONAR_TOKEN
+```
+6. Access the Application and SonarQube:
+* Back-end Application: The application should be running at http://localhost:8080.
+* Front-end Application: The front-end should be running at http://localhost:3000.
+* SonarQube: The SonarQube dashboard can be accessed at http://localhost:9000 with the default credentials (you will be asked to update the default password):
+  * Username: admin
+  * Password: admin
 
 ## Contributing
 I welcome contributions from the community! If you're a football enthusiast, data scientist, or developer, there are plenty of ways to get involved.
