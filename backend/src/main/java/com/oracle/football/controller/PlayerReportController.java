@@ -17,26 +17,26 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/v1/player-report")
 public class PlayerReportController {
 
-    private final PlayerReportService playerReportService;
-    private static final Logger logger = LoggerFactory.getLogger(PlayerReportController.class);
+  private final PlayerReportService playerReportService;
+  private static final Logger logger = LoggerFactory.getLogger(PlayerReportController.class);
 
-    public PlayerReportController(PlayerReportService playerReportService) {
-        this.playerReportService = playerReportService;
-    }
+  public PlayerReportController(PlayerReportService playerReportService) {
+    this.playerReportService = playerReportService;
+  }
 
-    @GetMapping()
-    public ResponseEntity<PlayerReportDto> getPlayerReport(@RequestParam String playerName) {
-        logger.info("Received request for player report: {}", playerName);
-        try {
-            PlayerReportDto playerReportDto = playerReportService.getOrCreatePlayerReport(playerName);
-            logger.info("Successfully retrieved player report for: {}", playerName);
-            return ResponseEntity.ok(playerReportDto);
-        } catch (ResourceNotFoundException e) {
-            logger.error("Player not found: {}", playerName);
-            throw e;
-        } catch (RuntimeException e) {
-            logger.error("An error occurred while getting player report: {}", playerName, e);
-            throw e;
-        }
+  @GetMapping()
+  public ResponseEntity<PlayerReportDto> getPlayerReport(@RequestParam String playerName) {
+    logger.info("Received request for player report: {}", playerName);
+    try {
+      PlayerReportDto playerReportDto = playerReportService.getOrCreatePlayerReport(playerName);
+      logger.info("Successfully retrieved player report for: {}", playerName);
+      return ResponseEntity.ok(playerReportDto);
+    } catch (ResourceNotFoundException e) {
+      logger.error("Player not found: {}", playerName);
+      throw e;
+    } catch (RuntimeException e) {
+      logger.error("An error occurred while getting player report: {}", playerName);
+      throw e;
     }
+  }
 }

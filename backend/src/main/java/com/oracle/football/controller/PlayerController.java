@@ -11,15 +11,16 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/api/v1/players")
 public class PlayerController {
-    private final PlayerService playerService;
 
-    public PlayerController(PlayerService playerService) {
-        this.playerService = playerService;
-    }
+  private final PlayerService playerService;
 
-    @GetMapping("/{playerName}")
-    public ResponseEntity<PlayerDto> getPlayer(@PathVariable String playerName) {
-        PlayerDto player = playerService.getPlayerDtoByName(playerName);
-        return ResponseEntity.ok(player);
-    }
+  public PlayerController(PlayerService playerService) {
+    this.playerService = playerService;
+  }
+
+  @GetMapping("/{playerName}")
+  public ResponseEntity<PlayerDto> getPlayer(@PathVariable String playerName) {
+    PlayerDto player = playerService.getPlayerDtoByName(playerName);
+    return ResponseEntity.ok(player);
+  }
 }

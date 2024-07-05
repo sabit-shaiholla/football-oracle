@@ -15,41 +15,41 @@ import java.util.List;
 @RequestMapping("api/v1/users")
 public class UserController {
 
-    private final UserService userService;
-    private final JwtUtil jwtUtil;
+  private final UserService userService;
+  private final JwtUtil jwtUtil;
 
-    public UserController(UserService userService, JwtUtil jwtUtil) {
-        this.userService = userService;
-        this.jwtUtil = jwtUtil;
-    }
+  public UserController(UserService userService, JwtUtil jwtUtil) {
+    this.userService = userService;
+    this.jwtUtil = jwtUtil;
+  }
 
-    @GetMapping
-    public List<UserDTO> getUsers() {
-        return userService.getAllUsers();
-    }
+  @GetMapping
+  public List<UserDTO> getUsers() {
+    return userService.getAllUsers();
+  }
 
-    @GetMapping("{userId}")
-    public UserDTO getUserById(@PathVariable("userId") Integer userId) {
-        return userService.getUserById(userId);
-    }
+  @GetMapping("{userId}")
+  public UserDTO getUserById(@PathVariable("userId") Integer userId) {
+    return userService.getUserById(userId);
+  }
 
-    @PostMapping
-    public ResponseEntity<?> registerUser(@RequestBody UserRegistrationRequest request) {
-        userService.addUser(request);
-        String jwtToken = jwtUtil.issueToken(request.email(),"ROLE_USER");
-        return ResponseEntity.ok()
-                .header(HttpHeaders.AUTHORIZATION, jwtToken)
-                .build();
-    }
+  @PostMapping
+  public ResponseEntity<?> registerUser(@RequestBody UserRegistrationRequest request) {
+    userService.addUser(request);
+    String jwtToken = jwtUtil.issueToken(request.email(), "ROLE_USER");
+    return ResponseEntity.ok()
+        .header(HttpHeaders.AUTHORIZATION, jwtToken)
+        .build();
+  }
 
-    @DeleteMapping("{userId}")
-    public void deleteUser(@PathVariable("userId") Integer userId) {
-        userService.deleteUserById(userId);
-    }
+  @DeleteMapping("{userId}")
+  public void deleteUser(@PathVariable("userId") Integer userId) {
+    userService.deleteUserById(userId);
+  }
 
-    @PutMapping("{userId}")
-    public void updateUser(@PathVariable("userId") Integer userId,
-                           @RequestBody UserUpdateRequest request) {
-        userService.updateUser(userId, request);
-    }
+  @PutMapping("{userId}")
+  public void updateUser(@PathVariable("userId") Integer userId,
+      @RequestBody UserUpdateRequest request) {
+    userService.updateUser(userId, request);
+  }
 }

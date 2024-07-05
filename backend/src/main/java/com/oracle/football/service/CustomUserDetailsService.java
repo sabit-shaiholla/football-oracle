@@ -10,16 +10,16 @@ import org.springframework.stereotype.Service;
 @Service
 public class CustomUserDetailsService implements UserDetailsService {
 
-    private final UserDao userDao;
+  private final UserDao userDao;
 
-    public CustomUserDetailsService(@Qualifier("jpa") UserDao userDao) {
-        this.userDao = userDao;
-    }
+  public CustomUserDetailsService(@Qualifier("jpa") UserDao userDao) {
+    this.userDao = userDao;
+  }
 
-    @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        return userDao.selectUserByEmail(username)
-                .orElseThrow(() -> new UsernameNotFoundException(
-                        "User with username " + username + " not found"));
-    }
+  @Override
+  public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+    return userDao.selectUserByEmail(username)
+        .orElseThrow(() -> new UsernameNotFoundException(
+            "User with username " + username + " not found"));
+  }
 }

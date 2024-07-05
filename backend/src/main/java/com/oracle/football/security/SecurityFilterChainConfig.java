@@ -19,52 +19,53 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableWebSecurity
 public class SecurityFilterChainConfig {
 
-    private final AuthenticationProvider authenticationProvider;
-    private final JwtAuthenticationFilter jwtAuthenticationFilter;
-    private final AuthenticationEntryPoint authenticationEntryPoint;
+  private final AuthenticationProvider authenticationProvider;
+  private final JwtAuthenticationFilter jwtAuthenticationFilter;
+  private final AuthenticationEntryPoint authenticationEntryPoint;
 
-    public SecurityFilterChainConfig(AuthenticationProvider authenticationProvider,
-                                     JwtAuthenticationFilter jwtAuthenticationFilter,
-                                     @Qualifier("delegatedAuthEntryPoint") AuthenticationEntryPoint authenticationEntryPoint) {
-        this.authenticationProvider = authenticationProvider;
-        this.jwtAuthenticationFilter = jwtAuthenticationFilter;
-        this.authenticationEntryPoint = authenticationEntryPoint;
-    }
+  public SecurityFilterChainConfig(AuthenticationProvider authenticationProvider,
+      JwtAuthenticationFilter jwtAuthenticationFilter,
+      @Qualifier("delegatedAuthEntryPoint") AuthenticationEntryPoint authenticationEntryPoint) {
+    this.authenticationProvider = authenticationProvider;
+    this.jwtAuthenticationFilter = jwtAuthenticationFilter;
+    this.authenticationEntryPoint = authenticationEntryPoint;
+  }
 
-    @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http
-                .csrf(AbstractHttpConfigurer::disable)
-                .cors(Customizer.withDefaults())
-                .authorizeHttpRequests(auth -> auth.
-                        requestMatchers(
-                                HttpMethod.POST,
-                                "/api/v1/auth/login",
-                                "/api/v1/users"
-                        )
-                        .permitAll()
-                        .requestMatchers(
-                                HttpMethod.GET,
-                                "/ping",
-                                "/api/v1/users"
-                        )
-                        .permitAll()
-                        .requestMatchers(
-                                HttpMethod.GET,
-                                "/actuator/**")
-                        .permitAll()
-                        .anyRequest()
-                        .authenticated()
-                )
-                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .authenticationProvider(authenticationProvider)
-                .addFilterBefore(
-                        jwtAuthenticationFilter,
-                        UsernamePasswordAuthenticationFilter.class
-                )
-                .exceptionHandling(ex -> ex.authenticationEntryPoint(authenticationEntryPoint));
+  @Bean
+  public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+    http
+        .csrf(AbstractHttpConfigurer::disable)
+        .cors(Customizer.withDefaults())
+        .authorizeHttpRequests(auth -> auth.
+            requestMatchers(
+                HttpMethod.POST,
+                "/api/v1/auth/login",
+                "/api/v1/users"
+            )
+            .permitAll()
+            .requestMatchers(
+                HttpMethod.GET,
+                "/ping",
+                "/api/v1/users"
+            )
+            .permitAll()
+            .requestMatchers(
+                HttpMethod.GET,
+                "/actuator/**")
+            .permitAll()
+            .anyRequest()
+            .authenticated()
+        )
+        .sessionManagement(
+            session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+        .authenticationProvider(authenticationProvider)
+        .addFilterBefore(
+            jwtAuthenticationFilter,
+            UsernamePasswordAuthenticationFilter.class
+        )
+        .exceptionHandling(ex -> ex.authenticationEntryPoint(authenticationEntryPoint));
 
-        return http.build();
-    }
+    return http.build();
+  }
 
 }
