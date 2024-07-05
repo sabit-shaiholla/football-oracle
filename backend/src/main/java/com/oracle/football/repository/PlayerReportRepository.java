@@ -7,5 +7,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.Optional;
 
 public interface PlayerReportRepository extends JpaRepository<PlayerReport, Long> {
-    Optional<PlayerReport> findByPlayer(Player player);
+
+  Optional<PlayerReport> findByPlayer(Player player);
 }

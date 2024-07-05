@@ -19,110 +19,111 @@ import java.util.stream.Collectors;
 @Service
 public class UserPlayerReviewService {
 
-    private final UserPlayerReviewRepository userPlayerReviewRepository;
-    private final UserRepository userRepository;
-    private final PlayerRepository playerRepository;
+  public static final String USER_NOT_FOUND = "User not found";
+  private final UserPlayerReviewRepository userPlayerReviewRepository;
+  private final UserRepository userRepository;
+  private final PlayerRepository playerRepository;
 
-    public UserPlayerReviewService(UserPlayerReviewRepository userPlayerReviewRepository,
-                                   UserRepository userRepository,
-                                   PlayerRepository playerRepository) {
-        this.userPlayerReviewRepository = userPlayerReviewRepository;
-        this.userRepository = userRepository;
-        this.playerRepository = playerRepository;
+  public UserPlayerReviewService(UserPlayerReviewRepository userPlayerReviewRepository,
+      UserRepository userRepository,
+      PlayerRepository playerRepository) {
+    this.userPlayerReviewRepository = userPlayerReviewRepository;
+    this.userRepository = userRepository;
+    this.playerRepository = playerRepository;
+  }
+
+  public UserPlayerReviewDto createReview(UserPlayerReviewRequest reviewRequest, String username) {
+    User user = userRepository.findByEmail(username)
+        .orElseThrow(() -> new RuntimeException(USER_NOT_FOUND));
+
+    Player player = playerRepository.findByPlayerId(reviewRequest.playerId())
+        .orElseThrow(() -> new RuntimeException("Player not found"));
+
+    PlayerReport playerReport = player.getReports();
+
+    List<UserPlayerReview> existingReviews = userPlayerReviewRepository.findAllByUser(user);
+    if (existingReviews.stream().anyMatch(review -> review.getPlayer().equals(player))) {
+      throw new DuplicateResourceException("A review by this user on this player already exists");
     }
 
-    public UserPlayerReviewDto createReview(UserPlayerReviewRequest reviewRequest, String username) {
-        User user = userRepository.findByEmail(username)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+    UserPlayerReview review = new UserPlayerReview();
+    review.setUser(user);
+    review.setPlayer(player);
+    review.setPlayerReport(playerReport);
+    review.setReview(reviewRequest.review());
+    review.setRating(reviewRequest.rating());
 
-        Player player = playerRepository.findByPlayerId(reviewRequest.playerId())
-                .orElseThrow(() -> new RuntimeException("Player not found"));
+    UserPlayerReview savedReview = userPlayerReviewRepository.save(review);
 
-        PlayerReport playerReport = player.getReports();
+    return new UserPlayerReviewDto(
+        savedReview.getReviewId(),
+        user.getUsername(),
+        player.getPlayerId(),
+        player.getPlayerName(),
+        player.getReports().getReportId(),
+        savedReview.getReview(),
+        savedReview.getRating());
+  }
 
-        List<UserPlayerReview> existingReviews = userPlayerReviewRepository.findAllByUser(user);
-        if (existingReviews.stream().anyMatch(review -> review.getPlayer().equals(player))) {
-            throw new DuplicateResourceException("A review by this user on this player already exists");
-        }
+  public List<UserPlayerReviewDto> getReviewsByUser(String username) {
+    User user = userRepository.findByEmail(username)
+        .orElseThrow(() -> new RuntimeException(USER_NOT_FOUND));
 
-        UserPlayerReview review = new UserPlayerReview();
-        review.setUser(user);
-        review.setPlayer(player);
-        review.setPlayerReport(playerReport);
-        review.setReview(reviewRequest.review());
-        review.setRating(reviewRequest.rating());
+    return userPlayerReviewRepository.findAllByUser(user).stream()
+        .map(review -> new UserPlayerReviewDto(
+            review.getReviewId(),
+            user.getUsername(),
+            review.getPlayer().getPlayerId(),
+            review.getPlayer().getPlayerName(),
+            review.getPlayerReport().getReportId(),
+            review.getReview(), review.getRating()))
+        .collect(Collectors.toList());
+  }
 
-        UserPlayerReview savedReview = userPlayerReviewRepository.save(review);
+  public UserPlayerReviewDto getPlayerReviewByUser(Integer playerId, String username) {
+    User user = userRepository.findByEmail(username)
+        .orElseThrow(() -> new ResourceNotFoundException(USER_NOT_FOUND));
 
-        return new UserPlayerReviewDto(
-                savedReview.getReviewId(),
-                user.getUsername(),
-                player.getPlayerId(),
-                player.getPlayerName(),
-                player.getReports().getReportId(),
-                savedReview.getReview(),
-                savedReview.getRating());
-    }
+    UserPlayerReview review = userPlayerReviewRepository.findAllByUser(user).stream()
+        .filter(r -> r.getPlayer().getPlayerId().equals(playerId))
+        .findFirst()
+        .orElseThrow(() -> new ResourceNotFoundException("Review not found"));
 
-    public List<UserPlayerReviewDto> getReviewsByUser(String username) {
-        User user = userRepository.findByEmail(username)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+    return new UserPlayerReviewDto(
+        review.getReviewId(),
+        user.getUsername(),
+        review.getPlayer().getPlayerId(),
+        review.getPlayer().getPlayerName(),
+        review.getPlayerReport().getReportId(),
+        review.getReview(),
+        review.getRating());
+  }
 
-        return userPlayerReviewRepository.findAllByUser(user).stream()
-                .map(review -> new UserPlayerReviewDto(
-                        review.getReviewId(),
-                        user.getUsername(),
-                        review.getPlayer().getPlayerId(),
-                        review.getPlayer().getPlayerName(),
-                        review.getPlayerReport().getReportId(),
-                        review.getReview(), review.getRating()))
-                .collect(Collectors.toList());
-    }
+  public UserPlayerReviewDto updateReview(Integer reviewId,
+      UserPlayerReviewRequest reviewRequest,
+      String username) {
+    User user = userRepository.findByEmail(username)
+        .orElseThrow(() -> new RuntimeException(USER_NOT_FOUND));
 
-    public UserPlayerReviewDto getPlayerReviewByUser(Integer playerId, String username){
-        User user = userRepository.findByEmail(username)
-                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+    UserPlayerReview review = userPlayerReviewRepository.findByReviewId(reviewId)
+        .orElseThrow(() -> new RuntimeException("Review not found"));
 
-        UserPlayerReview review = userPlayerReviewRepository.findAllByUser(user).stream()
-                .filter(r -> r.getPlayer().getPlayerId().equals(playerId))
-                .findFirst()
-                .orElseThrow(() -> new ResourceNotFoundException("Review not found"));
+    review.setReview(reviewRequest.review());
+    review.setRating(reviewRequest.rating());
 
-        return new UserPlayerReviewDto(
-                review.getReviewId(),
-                user.getUsername(),
-                review.getPlayer().getPlayerId(),
-                review.getPlayer().getPlayerName(),
-                review.getPlayerReport().getReportId(),
-                review.getReview(),
-                review.getRating());
-    }
+    userPlayerReviewRepository.save(review);
 
-    public UserPlayerReviewDto updateReview(Integer reviewId,
-                                            UserPlayerReviewRequest reviewRequest,
-                                            String username) {
-        User user = userRepository.findByEmail(username)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+    return new UserPlayerReviewDto(
+        reviewId,
+        user.getUsername(),
+        review.getPlayer().getPlayerId(),
+        review.getPlayer().getPlayerName(),
+        review.getPlayerReport().getReportId(),
+        review.getReview(),
+        review.getRating());
+  }
 
-        UserPlayerReview review = userPlayerReviewRepository.findByReviewId(reviewId)
-                .orElseThrow(() -> new RuntimeException("Review not found"));
-
-        review.setReview(reviewRequest.review());
-        review.setRating(reviewRequest.rating());
-
-        userPlayerReviewRepository.save(review);
-
-        return new UserPlayerReviewDto(
-                reviewId,
-                user.getUsername(),
-                review.getPlayer().getPlayerId(),
-                review.getPlayer().getPlayerName(),
-                review.getPlayerReport().getReportId(),
-                review.getReview(),
-                review.getRating());
-    }
-
-    public void deleteReview(Integer reviewId) {
-        userPlayerReviewRepository.deleteById(reviewId);
-    }
+  public void deleteReview(Integer reviewId) {
+    userPlayerReviewRepository.deleteById(reviewId);
+  }
 }

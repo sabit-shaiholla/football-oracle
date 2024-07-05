@@ -11,27 +11,27 @@ import java.util.stream.Collectors;
 @Component
 public class PlayerReportMapper {
 
-    public PlayerReportDto toDto(PlayerReport playerReport){
-        return new PlayerReportDto(
-                playerReport.getReportId(),
-                playerReport.getPlayer().getPlayerName(),
-                playerReport.getPlayerStrengths(),
-                playerReport.getPlayerWeaknesses(),
-                playerReport.getPlayerSummary(),
-                playerReport.getReviews().stream()
-                        .map(this::mapToPlayerReportDto)
-                        .collect(Collectors.toList())
-        );
-    }
+  public PlayerReportDto toDto(PlayerReport playerReport) {
+    return new PlayerReportDto(
+        playerReport.getReportId(),
+        playerReport.getPlayer().getPlayerName(),
+        playerReport.getPlayerStrengths(),
+        playerReport.getPlayerWeaknesses(),
+        playerReport.getPlayerSummary(),
+        playerReport.getReviews().stream()
+            .map(this::mapToPlayerReportDto)
+            .collect(Collectors.toList())
+    );
+  }
 
-    public UserPlayerReportDto mapToPlayerReportDto(UserPlayerReview review){
-        return new UserPlayerReportDto(
-                review.getReviewId(),
-                review.getReview(),
-                review.getRating(),
-                review.getUser().getId(),
-                review.getPlayer().getPlayerId(),
-                review.getPlayerReport().getReportId()
-        );
-    }
+  public UserPlayerReportDto mapToPlayerReportDto(UserPlayerReview review) {
+    return new UserPlayerReportDto(
+        review.getReviewId(),
+        review.getReview(),
+        review.getRating(),
+        review.getUser().getId(),
+        review.getPlayer().getPlayerId(),
+        review.getPlayerReport().getReportId()
+    );
+  }
 }

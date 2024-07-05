@@ -12,27 +12,27 @@ import java.util.List;
 @Configuration
 public class CorsConfig {
 
-    @Value("#{'${cors.allowed-origins}'.split(',')}")
-    private List<String> allowedOrigins;
+  @Value("#{'${cors.allowed-origins}'.split(',')}")
+  private List<String> allowedOrigins;
 
-    @Value("#{'${cors.allowed-methods}'.split(',')}")
-    private List<String> allowedMethods;
+  @Value("#{'${cors.allowed-methods}'.split(',')}")
+  private List<String> allowedMethods;
 
-    @Value("#{'${cors.allowed-headers}'.split(',')}")
-    private List<String> allowedHeaders;
+  @Value("#{'${cors.allowed-headers}'.split(',')}")
+  private List<String> allowedHeaders;
 
-    @Value("#{'${cors.exposed-headers}'.split(',')}")
-    private List<String> expectedHeaders;
+  @Value("#{'${cors.exposed-headers}'.split(',')}")
+  private List<String> expectedHeaders;
 
-    @Bean
-    public CorsConfigurationSource corsConfigurationSource() {
-        CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(allowedOrigins);
-        configuration.setAllowedMethods(allowedMethods);
-        configuration.setAllowedHeaders(allowedHeaders);
-        configuration.setExposedHeaders(expectedHeaders);
-        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/api/**", configuration);
-        return source;
-    }
+  @Bean
+  public CorsConfigurationSource corsConfigurationSource() {
+    CorsConfiguration configuration = new CorsConfiguration();
+    configuration.setAllowedOrigins(allowedOrigins);
+    configuration.setAllowedMethods(allowedMethods);
+    configuration.setAllowedHeaders(allowedHeaders);
+    configuration.setExposedHeaders(expectedHeaders);
+    UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+    source.registerCorsConfiguration("/api/**", configuration);
+    return source;
+  }
 }

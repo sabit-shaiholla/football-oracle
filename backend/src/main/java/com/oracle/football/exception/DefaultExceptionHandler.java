@@ -14,64 +14,64 @@ import java.time.LocalDateTime;
 @ControllerAdvice
 public class DefaultExceptionHandler {
 
-    @ExceptionHandler(ResourceNotFoundException.class)
-    public ResponseEntity<ApiError> handleException(ResourceNotFoundException e,
-                                                    HttpServletRequest request) {
-        ApiError apiError = new ApiError(
-                request.getRequestURI(),
-                e.getMessage(),
-                HttpStatus.NOT_FOUND.value(),
-                LocalDateTime.now()
-        );
-        return new ResponseEntity<>(apiError, HttpStatus.NOT_FOUND);
-    }
+  @ExceptionHandler(ResourceNotFoundException.class)
+  public ResponseEntity<ApiError> handleException(ResourceNotFoundException e,
+      HttpServletRequest request) {
+    ApiError apiError = new ApiError(
+        request.getRequestURI(),
+        e.getMessage(),
+        HttpStatus.NOT_FOUND.value(),
+        LocalDateTime.now()
+    );
+    return new ResponseEntity<>(apiError, HttpStatus.NOT_FOUND);
+  }
 
-    @ExceptionHandler(InsufficientAuthenticationException.class)
-    public ResponseEntity<ApiError> handleException(InsufficientAuthenticationException e,
-                                                    HttpServletRequest request) {
-        ApiError apiError = new ApiError(
-                request.getRequestURI(),
-                e.getMessage(),
-                HttpStatus.FORBIDDEN.value(),
-                LocalDateTime.now()
-        );
-        return new ResponseEntity<>(apiError, HttpStatus.FORBIDDEN);
-    }
+  @ExceptionHandler(InsufficientAuthenticationException.class)
+  public ResponseEntity<ApiError> handleException(InsufficientAuthenticationException e,
+      HttpServletRequest request) {
+    ApiError apiError = new ApiError(
+        request.getRequestURI(),
+        e.getMessage(),
+        HttpStatus.FORBIDDEN.value(),
+        LocalDateTime.now()
+    );
+    return new ResponseEntity<>(apiError, HttpStatus.FORBIDDEN);
+  }
 
-    @ExceptionHandler(BadCredentialsException.class)
-    public ResponseEntity<ApiError> handleException(BadCredentialsException e,
-                                                    HttpServletRequest request) {
-        ApiError apiError = new ApiError(
-                request.getRequestURI(),
-                e.getMessage(),
-                HttpStatus.UNAUTHORIZED.value(),
-                LocalDateTime.now()
-        );
-        return new ResponseEntity<>(apiError, HttpStatus.UNAUTHORIZED);
-    }
+  @ExceptionHandler(BadCredentialsException.class)
+  public ResponseEntity<ApiError> handleException(BadCredentialsException e,
+      HttpServletRequest request) {
+    ApiError apiError = new ApiError(
+        request.getRequestURI(),
+        e.getMessage(),
+        HttpStatus.UNAUTHORIZED.value(),
+        LocalDateTime.now()
+    );
+    return new ResponseEntity<>(apiError, HttpStatus.UNAUTHORIZED);
+  }
 
-    @ExceptionHandler(Exception.class)
-    public ResponseEntity<ApiError> handleException(Exception e,
-                                                    HttpServletRequest request) {
-        ApiError apiError = new ApiError(
-                request.getRequestURI(),
-                e.getMessage(),
-                HttpStatus.INTERNAL_SERVER_ERROR.value(),
-                LocalDateTime.now()
-        );
-        return new ResponseEntity<>(apiError, HttpStatus.INTERNAL_SERVER_ERROR);
-    }
+  @ExceptionHandler(Exception.class)
+  public ResponseEntity<ApiError> handleException(Exception e,
+      HttpServletRequest request) {
+    ApiError apiError = new ApiError(
+        request.getRequestURI(),
+        e.getMessage(),
+        HttpStatus.INTERNAL_SERVER_ERROR.value(),
+        LocalDateTime.now()
+    );
+    return new ResponseEntity<>(apiError, HttpStatus.INTERNAL_SERVER_ERROR);
+  }
 
-    @ExceptionHandler(Selector.SelectorParseException.class)
-    public ResponseEntity<ApiError> handleException(Selector.SelectorParseException e,
-                                                    HttpServletRequest request) {
-        ApiError apiError = new ApiError(
-                request.getRequestURI(),
-                e.getMessage(),
-                HttpStatus.INTERNAL_SERVER_ERROR.value(),
-                LocalDateTime.now()
-        );
-        return new ResponseEntity<>(apiError, HttpStatus.INTERNAL_SERVER_ERROR);
-    }
+  @ExceptionHandler(Selector.SelectorParseException.class)
+  public ResponseEntity<ApiError> handleException(Selector.SelectorParseException e,
+      HttpServletRequest request) {
+    ApiError apiError = new ApiError(
+        request.getRequestURI(),
+        e.getMessage(),
+        HttpStatus.INTERNAL_SERVER_ERROR.value(),
+        LocalDateTime.now()
+    );
+    return new ResponseEntity<>(apiError, HttpStatus.INTERNAL_SERVER_ERROR);
+  }
 
 }

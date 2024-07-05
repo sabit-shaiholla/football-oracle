@@ -14,27 +14,27 @@ import java.util.Map;
 @Table(name = "players")
 public class Player {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer playerId;
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private Integer playerId;
 
-    @Column(unique = true, nullable = false)
-    private String playerName;
+  @Column(unique = true, nullable = false)
+  private String playerName;
 
-    private String playerPosition;
-    private int playerAge;
-    private String birthday;
-    private String team;
+  private String playerPosition;
+  private int playerAge;
+  private String birthday;
+  private String team;
 
-    @OneToMany(mappedBy = "player", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<UserPlayerReview> reviews;
+  @OneToMany(mappedBy = "player", cascade = CascadeType.ALL, orphanRemoval = true)
+  private List<UserPlayerReview> reviews;
 
-    @OneToOne(mappedBy = "player", cascade = CascadeType.ALL, orphanRemoval = true)
-    private PlayerReport reports;
+  @OneToOne(mappedBy = "player", cascade = CascadeType.ALL, orphanRemoval = true)
+  private PlayerReport reports;
 
-    @ElementCollection
-    @CollectionTable(name = "player_statistics")
-    @MapKeyColumn(name = "statistic_name")
-    @Column(name = "statistic_value")
-    private Map<String, String> statistics;
+  @ElementCollection
+  @CollectionTable(name = "player_statistics")
+  @MapKeyColumn(name = "statistic_name")
+  @Column(name = "statistic_value")
+  private Map<String, String> statistics;
 }
