@@ -20,111 +20,112 @@ import static org.mockito.Mockito.*;
 
 class UserJPADataAccessServiceTest {
 
-    private UserJPAAccessService underTest;
-    private AutoCloseable autoCloseable;
-    @Mock private UserRepository userRepository;
+  private UserJPAAccessService underTest;
+  private AutoCloseable autoCloseable;
+  @Mock
+  private UserRepository userRepository;
 
-    @BeforeEach
-    void setUp() {
-        autoCloseable = MockitoAnnotations.openMocks(this);
-        underTest = new UserJPAAccessService(userRepository);
-    }
+  @BeforeEach
+  void setUp() {
+    autoCloseable = MockitoAnnotations.openMocks(this);
+    underTest = new UserJPAAccessService(userRepository);
+  }
 
-    @AfterEach
-    void tearDown() throws Exception {
-        autoCloseable.close();
-    }
+  @AfterEach
+  void tearDown() throws Exception {
+    autoCloseable.close();
+  }
 
-    @Test
-    void selectAllUsers() {
-        Page<User> page = mock(Page.class);
-        List<User> users = List.of(new User());
-        when(page.getContent()).thenReturn(users);
-        when(userRepository.findAll(any(Pageable.class))).thenReturn(page);
+  @Test
+  void selectAllUsers() {
+    Page<User> page = mock(Page.class);
+    List<User> users = List.of(new User());
+    when(page.getContent()).thenReturn(users);
+    when(userRepository.findAll(any(Pageable.class))).thenReturn(page);
 
-        // When
-        List<User> expected = underTest.selectAllUsers();
+    // When
+    List<User> expected = underTest.selectAllUsers();
 
-        // Then
-        assertThat(expected).isEqualTo(users);
-        ArgumentCaptor<Pageable> pageArgumentCaptor = ArgumentCaptor.forClass(Pageable.class);
-        verify(userRepository).findAll(pageArgumentCaptor.capture());
-        assertThat(pageArgumentCaptor.getValue()).isEqualTo(Pageable.ofSize(1000));
-    }
+    // Then
+    assertThat(expected).isEqualTo(users);
+    ArgumentCaptor<Pageable> pageArgumentCaptor = ArgumentCaptor.forClass(Pageable.class);
+    verify(userRepository).findAll(pageArgumentCaptor.capture());
+    assertThat(pageArgumentCaptor.getValue()).isEqualTo(Pageable.ofSize(1000));
+  }
 
-    @Test
-    void selectUserById() {
-        // Given
-        int id = 1;
+  @Test
+  void selectUserById() {
+    // Given
+    int id = 1;
 
-        // When
-        underTest.selectUserById(id);
+    // When
+    underTest.selectUserById(id);
 
-        // Then
-        verify(userRepository).findById(id);
-    }
+    // Then
+    verify(userRepository).findById(id);
+  }
 
-    @Test
-    void insertUser() {
-        // Given
-        User user = new User("tonystark@gmail.com", "Tony", "password");
+  @Test
+  void insertUser() {
+    // Given
+    User user = new User("tonystark@gmail.com", "Tony", "password");
 
-        // When
-        underTest.insertUser(user);
+    // When
+    underTest.insertUser(user);
 
-        // Then
-        verify(userRepository).save(user);
-    }
+    // Then
+    verify(userRepository).save(user);
+  }
 
-    @Test
-    void existsUserWithEmail() {
-        // Given
-        String email = "test1@gmail.com";
+  @Test
+  void existsUserWithEmail() {
+    // Given
+    String email = "test1@gmail.com";
 
-        // When
-        underTest.existsUserWithEmail(email);
+    // When
+    underTest.existsUserWithEmail(email);
 
-        // Then
-        verify(userRepository).existsUserByEmail(email);
-    }
+    // Then
+    verify(userRepository).existsUserByEmail(email);
+  }
 
-    @Test
-    void existsUserWithId() {
-        // Given
-        int id = 1;
+  @Test
+  void existsUserWithId() {
+    // Given
+    int id = 1;
 
-        // When
-        underTest.existsUserWithId(id);
+    // When
+    underTest.existsUserWithId(id);
 
-        // Then
-        verify(userRepository).existsUserById(id);
-    }
+    // Then
+    verify(userRepository).existsUserById(id);
+  }
 
-    @Test
-    void deleteUserById() {
-        // Given
-        int id = 1;
+  @Test
+  void deleteUserById() {
+    // Given
+    int id = 1;
 
-        // When
-        underTest.deleteUserById(id);
+    // When
+    underTest.deleteUserById(id);
 
-        // Then
-        verify(userRepository).deleteById(id);
-    }
+    // Then
+    verify(userRepository).deleteById(id);
+  }
 
-    @Test
-    void updateUser() {
-        // Given
-        User user = new User(
-                1,
-                "agent007@gmail.com",
-                "Agent007",
-                "password");
+  @Test
+  void updateUser() {
+    // Given
+    User user = new User(
+        1,
+        "agent007@gmail.com",
+        "Agent007",
+        "password");
 
-        // When
-        underTest.updateUser(user);
+    // When
+    underTest.updateUser(user);
 
-        // Then
-        verify(userRepository).save(user);
-    }
+    // Then
+    verify(userRepository).save(user);
+  }
 }

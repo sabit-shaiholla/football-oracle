@@ -27,249 +27,251 @@ import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class UserServiceTest {
-    @Mock
-    private UserDao userDao;
-    @Mock
-    private PasswordEncoder passwordEncoder;
-    private UserService underTest;
-    private final UserDTOMapper userDTOMapper = new UserDTOMapper();
 
-    @BeforeEach
-    void setUp() {
-        underTest = new UserService(userDao, passwordEncoder, userDTOMapper);
-    }
+  @Mock
+  private UserDao userDao;
+  @Mock
+  private PasswordEncoder passwordEncoder;
+  private UserService underTest;
+  private final UserDTOMapper userDTOMapper = new UserDTOMapper();
 
-    @Test
-    void getAllUsers() {
-        // When
-        underTest.getAllUsers();
+  @BeforeEach
+  void setUp() {
+    underTest = new UserService(userDao, passwordEncoder, userDTOMapper);
+  }
 
-        // Then
-        verify(userDao).selectAllUsers();
-    }
+  @Test
+  void getAllUsers() {
+    // When
+    underTest.getAllUsers();
 
-    @Test
-    void canGetUser() {
-        // Given
-        int id = 10;
-        User user = new User(id, "peterparker@gmail.com", "Peter", "password");
-        when(userDao.selectUserById(id)).thenReturn(Optional.of(user));
+    // Then
+    verify(userDao).selectAllUsers();
+  }
 
-        UserDTO expected = userDTOMapper.apply(user);
-
-        // When
-        UserDTO actual = underTest.getUserById(id);
+  @Test
+  void canGetUser() {
+    // Given
+    int id = 10;
+    User user = new User(id, "peterparker@gmail.com", "Peter", "password");
+    when(userDao.selectUserById(id)).thenReturn(Optional.of(user));
 
-        // Then
-        assertThat(actual).isEqualTo(expected);
-    }
-
-    @Test
-    void willThrowWhenGetUserReturnEmptyOptional() {
-        // Given
-        int id = 10;
+    UserDTO expected = userDTOMapper.apply(user);
 
-        when(userDao.selectUserById(id)).thenReturn(Optional.empty());
+    // When
+    UserDTO actual = underTest.getUserById(id);
 
-        // When
-        // Then
-        assertThatThrownBy(() ->
-                underTest.getUserById(id))
-                .isInstanceOf(ResourceNotFoundException.class)
-                .hasMessage("User with id " + id + " not found");
-    }
+    // Then
+    assertThat(actual).isEqualTo(expected);
+  }
+
+  @Test
+  void willThrowWhenGetUserReturnEmptyOptional() {
+    // Given
+    int id = 10;
 
-    @Test
-    void addUser() {
-        // Given
-        String email = "peterparker@gmail.com";
+    when(userDao.selectUserById(id)).thenReturn(Optional.empty());
 
-        when(userDao.existsUserWithEmail(email)).thenReturn(false);
+    // When
+    // Then
+    assertThatThrownBy(() ->
+        underTest.getUserById(id))
+        .isInstanceOf(ResourceNotFoundException.class)
+        .hasMessage("User with id " + id + " not found");
+  }
 
-        UserRegistrationRequest request = new UserRegistrationRequest(email, "Peter","password");
+  @Test
+  void addUser() {
+    // Given
+    String email = "peterparker@gmail.com";
 
-        String passwordHash = "ksa183;!#$";
+    when(userDao.existsUserWithEmail(email)).thenReturn(false);
 
-        when(passwordEncoder.encode(request.password())).thenReturn(passwordHash);
+    UserRegistrationRequest request = new UserRegistrationRequest(email, "Peter", "password");
 
-        // When
-        underTest.addUser(request);
+    String passwordHash = "ksa183;!#$";
 
-        // Then
-        ArgumentCaptor<User> userArgumentCaptor = ArgumentCaptor.forClass(User.class);
+    when(passwordEncoder.encode(request.password())).thenReturn(passwordHash);
 
-        verify(userDao).insertUser(userArgumentCaptor.capture());
+    // When
+    underTest.addUser(request);
 
-        User capturedUser = userArgumentCaptor.getValue();
+    // Then
+    ArgumentCaptor<User> userArgumentCaptor = ArgumentCaptor.forClass(User.class);
 
-        assertThat(capturedUser.getId()).isNull();
-        assertThat(capturedUser.getName()).isEqualTo(request.name());
-        assertThat(capturedUser.getEmail()).isEqualTo(request.email());
-        assertThat(capturedUser.getPassword()).isEqualTo(passwordHash);
-    }
+    verify(userDao).insertUser(userArgumentCaptor.capture());
 
-    @Test
-    void willThrowWhenEmailExistsWhileAddingAUser() {
-        // Given
-        String email = "peterparker@gmail.com";
+    User capturedUser = userArgumentCaptor.getValue();
 
-        when(userDao.existsUserWithEmail(email)).thenReturn(true);
+    assertThat(capturedUser.getId()).isNull();
+    assertThat(capturedUser.getName()).isEqualTo(request.name());
+    assertThat(capturedUser.getEmail()).isEqualTo(request.email());
+    assertThat(capturedUser.getPassword()).isEqualTo(passwordHash);
+  }
 
-        UserRegistrationRequest request = new UserRegistrationRequest(email,"peterparker@gmail.com", "password");
+  @Test
+  void willThrowWhenEmailExistsWhileAddingAUser() {
+    // Given
+    String email = "peterparker@gmail.com";
 
-        // When
-        assertThatThrownBy(() ->
-                underTest.addUser(request))
-                .isInstanceOf(DuplicateResourceException.class)
-                .hasMessage("User with username " + email + " already exists");
+    when(userDao.existsUserWithEmail(email)).thenReturn(true);
 
-        // Then
-        verify(userDao, never()).insertUser(any());
-    }
+    UserRegistrationRequest request = new UserRegistrationRequest(email, "peterparker@gmail.com",
+        "password");
 
-    @Test
-    void deleteUserById() {
-        // Given
-        int id = 10;
+    // When
+    assertThatThrownBy(() ->
+        underTest.addUser(request))
+        .isInstanceOf(DuplicateResourceException.class)
+        .hasMessage("User with username " + email + " already exists");
 
-        when(userDao.existsUserWithId(id)).thenReturn(true);
+    // Then
+    verify(userDao, never()).insertUser(any());
+  }
 
-        // When
-        underTest.deleteUserById(id);
-        // Then
-        verify(userDao).deleteUserById(id);
-    }
+  @Test
+  void deleteUserById() {
+    // Given
+    int id = 10;
 
-    @Test
-    void willThrowDeleteUserByIdNotExists() {
-        // Given
-        int id = 10;
+    when(userDao.existsUserWithId(id)).thenReturn(true);
 
-        when(userDao.existsUserWithId(id)).thenReturn(false);
+    // When
+    underTest.deleteUserById(id);
+    // Then
+    verify(userDao).deleteUserById(id);
+  }
 
-        // When
-        assertThatThrownBy(() ->
-                underTest.deleteUserById(id))
-                .isInstanceOf(ResourceNotFoundException.class)
-                .hasMessage("User with id " + id + " not found");
+  @Test
+  void willThrowDeleteUserByIdNotExists() {
+    // Given
+    int id = 10;
 
-        // Then
-        verify(userDao, never()).deleteUserById(id);
-    }
+    when(userDao.existsUserWithId(id)).thenReturn(false);
 
-    @Test
-    void canUpdateAllUsersProperties() {
-        // Given
-        int id = 10;
-        User user = new User(id, "peterparker@gmail.com", "Peter", "password");
-        when(userDao.selectUserById(id)).thenReturn(Optional.of(user));
+    // When
+    assertThatThrownBy(() ->
+        underTest.deleteUserById(id))
+        .isInstanceOf(ResourceNotFoundException.class)
+        .hasMessage("User with id " + id + " not found");
 
-        String newEmail = "spiderman@gmail.com";
+    // Then
+    verify(userDao, never()).deleteUserById(id);
+  }
 
-        UserUpdateRequest updateRequest = new UserUpdateRequest("Spider-man", newEmail);
+  @Test
+  void canUpdateAllUsersProperties() {
+    // Given
+    int id = 10;
+    User user = new User(id, "peterparker@gmail.com", "Peter", "password");
+    when(userDao.selectUserById(id)).thenReturn(Optional.of(user));
 
-        when(userDao.existsUserWithEmail(newEmail)).thenReturn(false);
+    String newEmail = "spiderman@gmail.com";
 
-        // When
-        underTest.updateUser(id, updateRequest);
+    UserUpdateRequest updateRequest = new UserUpdateRequest("Spider-man", newEmail);
 
-        // Then
-        ArgumentCaptor<User> userArgumentCaptor = ArgumentCaptor.forClass(User.class);
+    when(userDao.existsUserWithEmail(newEmail)).thenReturn(false);
 
-        verify(userDao).updateUser(userArgumentCaptor.capture());
-        User capturedUser = userArgumentCaptor.getValue();
+    // When
+    underTest.updateUser(id, updateRequest);
 
-        assertThat(capturedUser.getName()).isEqualTo(updateRequest.name());
-        assertThat(capturedUser.getEmail()).isEqualTo(updateRequest.email());
-    }
+    // Then
+    ArgumentCaptor<User> userArgumentCaptor = ArgumentCaptor.forClass(User.class);
 
-    @Test
-    void canUpdateOnlyUserName() {
-        // Given
-        int id = 10;
-        User user = new User(id, "peterparker@gmail.com", "Peter", "password");
-        when(userDao.selectUserById(id)).thenReturn(Optional.of(user));
+    verify(userDao).updateUser(userArgumentCaptor.capture());
+    User capturedUser = userArgumentCaptor.getValue();
 
-        UserUpdateRequest updateRequest = new UserUpdateRequest("Spider-man", null);
+    assertThat(capturedUser.getName()).isEqualTo(updateRequest.name());
+    assertThat(capturedUser.getEmail()).isEqualTo(updateRequest.email());
+  }
 
-        // When
-        underTest.updateUser(id, updateRequest);
+  @Test
+  void canUpdateOnlyUserName() {
+    // Given
+    int id = 10;
+    User user = new User(id, "peterparker@gmail.com", "Peter", "password");
+    when(userDao.selectUserById(id)).thenReturn(Optional.of(user));
 
-        // Then
-        ArgumentCaptor<User> userArgumentCaptor = ArgumentCaptor.forClass(User.class);
+    UserUpdateRequest updateRequest = new UserUpdateRequest("Spider-man", null);
 
-        verify(userDao).updateUser(userArgumentCaptor.capture());
-        User capturedUser = userArgumentCaptor.getValue();
+    // When
+    underTest.updateUser(id, updateRequest);
 
-        assertThat(capturedUser.getName()).isEqualTo(updateRequest.name());
-        assertThat(capturedUser.getEmail()).isEqualTo(user.getEmail());
-    }
+    // Then
+    ArgumentCaptor<User> userArgumentCaptor = ArgumentCaptor.forClass(User.class);
 
-    @Test
-    void canUpdateOnlyUserEmail() {
-        // Given
-        int id = 10;
-        User user = new User(id, "peterparker@gmail.com", "Peter", "password");
-        when(userDao.selectUserById(id)).thenReturn(Optional.of(user));
+    verify(userDao).updateUser(userArgumentCaptor.capture());
+    User capturedUser = userArgumentCaptor.getValue();
 
-        String newEmail = "spiderman@gmail.com";
+    assertThat(capturedUser.getName()).isEqualTo(updateRequest.name());
+    assertThat(capturedUser.getEmail()).isEqualTo(user.getEmail());
+  }
 
-        UserUpdateRequest updateRequest = new UserUpdateRequest(null, newEmail);
+  @Test
+  void canUpdateOnlyUserEmail() {
+    // Given
+    int id = 10;
+    User user = new User(id, "peterparker@gmail.com", "Peter", "password");
+    when(userDao.selectUserById(id)).thenReturn(Optional.of(user));
 
-        when(userDao.existsUserWithEmail(newEmail)).thenReturn(false);
+    String newEmail = "spiderman@gmail.com";
 
-        // When
-        underTest.updateUser(id, updateRequest);
+    UserUpdateRequest updateRequest = new UserUpdateRequest(null, newEmail);
 
-        // Then
-        ArgumentCaptor<User> userArgumentCaptor = ArgumentCaptor.forClass(User.class);
+    when(userDao.existsUserWithEmail(newEmail)).thenReturn(false);
 
-        verify(userDao).updateUser(userArgumentCaptor.capture());
-        User capturedUser = userArgumentCaptor.getValue();
+    // When
+    underTest.updateUser(id, updateRequest);
 
-        assertThat(capturedUser.getName()).isEqualTo(user.getName());
-        assertThat(capturedUser.getEmail()).isEqualTo(newEmail);
-    }
+    // Then
+    ArgumentCaptor<User> userArgumentCaptor = ArgumentCaptor.forClass(User.class);
 
-    @Test
-    void willThrowWhenTryingToUpdateUserEmailWhenAlreadyTaken() {
-        // Given
-        int id = 10;
-        User user = new User(id, "peterparker@gmail.com", "Peter", "password");
-        when(userDao.selectUserById(id)).thenReturn(Optional.of(user));
+    verify(userDao).updateUser(userArgumentCaptor.capture());
+    User capturedUser = userArgumentCaptor.getValue();
 
-        String newEmail = "spiderman@gmail.com";
+    assertThat(capturedUser.getName()).isEqualTo(user.getName());
+    assertThat(capturedUser.getEmail()).isEqualTo(newEmail);
+  }
 
-        UserUpdateRequest updateRequest = new UserUpdateRequest(null, newEmail);
+  @Test
+  void willThrowWhenTryingToUpdateUserEmailWhenAlreadyTaken() {
+    // Given
+    int id = 10;
+    User user = new User(id, "peterparker@gmail.com", "Peter", "password");
+    when(userDao.selectUserById(id)).thenReturn(Optional.of(user));
 
-        when(userDao.existsUserWithEmail(newEmail)).thenReturn(true);
+    String newEmail = "spiderman@gmail.com";
 
-        // When
-        assertThatThrownBy(() ->
-                underTest.updateUser(id, updateRequest))
-                .isInstanceOf(DuplicateResourceException.class)
-                .hasMessage("User with username " + newEmail + " already exists");
+    UserUpdateRequest updateRequest = new UserUpdateRequest(null, newEmail);
 
-        // Then
-        verify(userDao, never()).updateUser(any());
-    }
+    when(userDao.existsUserWithEmail(newEmail)).thenReturn(true);
 
-    @Test
-    void willThrowWhenUserUpdateHasNoChanges() {
-        // Given
-        int id = 10;
-        User user = new User(id, "peterparker@gmail.com", "Peter", "password");
-        when(userDao.selectUserById(id)).thenReturn(Optional.of(user));
+    // When
+    assertThatThrownBy(() ->
+        underTest.updateUser(id, updateRequest))
+        .isInstanceOf(DuplicateResourceException.class)
+        .hasMessage("User with username " + newEmail + " already exists");
 
-        UserUpdateRequest updateRequest = new UserUpdateRequest(user.getName(), user.getEmail());
+    // Then
+    verify(userDao, never()).updateUser(any());
+  }
 
-        // When
-        assertThatThrownBy(() ->
-                underTest.updateUser(id, updateRequest))
-                .isInstanceOf(RequestValidationException.class)
-                .hasMessage("No changes detected");
+  @Test
+  void willThrowWhenUserUpdateHasNoChanges() {
+    // Given
+    int id = 10;
+    User user = new User(id, "peterparker@gmail.com", "Peter", "password");
+    when(userDao.selectUserById(id)).thenReturn(Optional.of(user));
 
-        // Then
-        verify(userDao, never()).updateUser(any());
-    }
+    UserUpdateRequest updateRequest = new UserUpdateRequest(user.getName(), user.getEmail());
+
+    // When
+    assertThatThrownBy(() ->
+        underTest.updateUser(id, updateRequest))
+        .isInstanceOf(RequestValidationException.class)
+        .hasMessage("No changes detected");
+
+    // Then
+    verify(userDao, never()).updateUser(any());
+  }
 }
