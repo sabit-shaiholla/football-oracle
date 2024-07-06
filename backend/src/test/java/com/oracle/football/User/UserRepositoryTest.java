@@ -22,82 +22,82 @@ import static org.assertj.core.api.Assertions.assertThat;
 @Import({TestConfig.class})
 class UserRepositoryTest extends AbstractTestcontainers {
 
-    @Autowired
-    private UserRepository underTest;
+  @Autowired
+  private UserRepository underTest;
 
-    @Autowired
-    private ApplicationContext applicationContext;
+  @Autowired
+  private ApplicationContext applicationContext;
 
-    @BeforeEach
-    void setUp() {
-        underTest.deleteAll();
-        System.out.println(applicationContext.getBeanDefinitionCount());
-    }
+  @BeforeEach
+  void setUp() {
+    underTest.deleteAll();
+    System.out.println(applicationContext.getBeanDefinitionCount());
+  }
 
-    @Test
-    void existsUserByEmail() {
-        // Given
-        String email = FAKER.internet().safeEmailAddress() + "-" + UUID.randomUUID();
-        User user = new User(
-                email,
-                FAKER.name().fullName(),
-                "password");
+  @Test
+  void existsUserByEmail() {
+    // Given
+    String email = FAKER.internet().safeEmailAddress() + "-" + UUID.randomUUID();
+    User user = new User(
+        email,
+        FAKER.name().fullName(),
+        "password");
 
-        underTest.save(user);
+    underTest.save(user);
 
-        // When
-        var actual = underTest.existsUserByEmail(email);
+    // When
+    var actual = underTest.existsUserByEmail(email);
 
-        // Then
-        assertThat(actual).isTrue();
-    }
+    // Then
+    assertThat(actual).isTrue();
+  }
 
-    @Test
-    void existsUserByEmailFailsWhenEmailNotPresent() {
-        // Given
-        String email = FAKER.internet().safeEmailAddress() + "-" + UUID.randomUUID();
+  @Test
+  void existsUserByEmailFailsWhenEmailNotPresent() {
+    // Given
+    String email = FAKER.internet().safeEmailAddress() + "-" + UUID.randomUUID();
 
-        // When
-        var actual = underTest.existsUserByEmail(email);
+    // When
+    var actual = underTest.existsUserByEmail(email);
 
-        // Then
-        assertThat(actual).isFalse();
-    }
+    // Then
+    assertThat(actual).isFalse();
+  }
 
-    @Test
-    void existsUserById() {
-        // Given
-        String email = FAKER.internet().safeEmailAddress() + "-" + UUID.randomUUID();
-        User user = new User(
-                email,
-                FAKER.name().fullName(),
-                "password");
+  @Test
+  void existsUserById() {
+    // Given
+    String email = FAKER.internet().safeEmailAddress() + "-" + UUID.randomUUID();
+    User user = new User(
+        email,
+        FAKER.name().fullName(),
+        "password");
 
-        underTest.save(user);
+    underTest.save(user);
 
-        int id = underTest.findAll()
-                .stream()
-                .filter(u -> u.getEmail().equals(email))
-                .map(User::getId)
-                .findFirst()
-                .orElseThrow();
+    int id = underTest.findAll()
+        .stream()
+        .filter(u -> u.getEmail().equals(email))
+        .map(User::getId)
+        .findFirst()
+        .orElseThrow();
 
-        // When
-        var actual = underTest.existsUserById(id);
+    // When
+    var actual = underTest.existsUserById(id);
 
-        // Then
-        assertThat(actual).isTrue();
-    }
+    // Then
+    assertThat(actual).isTrue();
+  }
 
-    @Test
-    void existsUserByIdFailsWhenIdNotPresent() {
-        // Given
-        int id = -1;
+  @Test
+  void existsUserByIdFailsWhenIdNotPresent() {
+    // Given
+    int id = -1;
 
-        // When
-        var actual = underTest.existsUserById(id);
+    // When
+    var actual = underTest.existsUserById(id);
 
-        // Then
-        assertThat(actual).isFalse();
-    }
+    // Then
+    assertThat(actual).isFalse();
+  }
 }

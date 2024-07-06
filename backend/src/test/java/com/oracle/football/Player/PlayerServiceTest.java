@@ -18,70 +18,70 @@ import static org.mockito.Mockito.*;
 
 class PlayerServiceTest {
 
-    @Mock
-    private PlayerService playerService;
+  @Mock
+  private PlayerService playerService;
 
-    @BeforeEach
-    public void setup() {
-        MockitoAnnotations.openMocks(this);
-    }
+  @BeforeEach
+  public void setup() {
+    MockitoAnnotations.openMocks(this);
+  }
 
-    @Test
-    public void testSavePlayer() {
-        Player player = new Player();
-        player.setPlayerName("Test Player");
+  @Test
+  void testSavePlayer() {
+    Player player = new Player();
+    player.setPlayerName("Test Player");
 
-        when(playerService.savePlayer(any(Player.class))).thenReturn(player);
+    when(playerService.savePlayer(any(Player.class))).thenReturn(player);
 
-        Player result = playerService.savePlayer(player);
+    Player result = playerService.savePlayer(player);
 
-        assertEquals(player.getPlayerName(), result.getPlayerName());
-        verify(playerService, times(1)).savePlayer(player);
-    }
+    assertEquals(player.getPlayerName(), result.getPlayerName());
+    verify(playerService, times(1)).savePlayer(player);
+  }
 
-    @Test
-    public void testFindPlayerByName() {
-        Player player = new Player();
-        player.setPlayerName("Test Player");
+  @Test
+  void testFindPlayerByName() {
+    Player player = new Player();
+    player.setPlayerName("Test Player");
 
-        when(playerService.findPlayerByName(anyString())).thenReturn(Optional.of(player));
+    when(playerService.findPlayerByName(anyString())).thenReturn(Optional.of(player));
 
-        Optional<Player> result = playerService.findPlayerByName("Test Player");
+    Optional<Player> result = playerService.findPlayerByName("Test Player");
 
-        assertEquals(player.getPlayerName(), result.get().getPlayerName());
-        verify(playerService, times(1)).findPlayerByName("Test Player");
-    }
+    assertEquals(player.getPlayerName(), result.get().getPlayerName());
+    verify(playerService, times(1)).findPlayerByName("Test Player");
+  }
 
-    @Test
-    public void testGetPlayerDtoByName() {
-        // Given
-        String playerName = "Sabit";
-        Player player = new Player();
-        player.setPlayerName(playerName);
-        player.setPlayerPosition("Midfielder");
-        player.setPlayerAge(27);
-        player.setBirthday("1996-12-28");
-        player.setTeam("Manchester United");
-        Map<String, String> stats = new HashMap<>();
-        stats.put("Goals", "10");
-        stats.put("Assists", "6");
-        player.setStatistics(stats);
+  @Test
+  void testGetPlayerDtoByName() {
+    // Given
+    String playerName = "Sabit";
+    Player player = new Player();
+    player.setPlayerName(playerName);
+    player.setPlayerPosition("Midfielder");
+    player.setPlayerAge(27);
+    player.setBirthday("1996-12-28");
+    player.setTeam("Manchester United");
+    Map<String, String> stats = new HashMap<>();
+    stats.put("Goals", "10");
+    stats.put("Assists", "6");
+    player.setStatistics(stats);
 
-        PlayerDto expectedPlayerDto = new PlayerDto(
-                player.getPlayerId(),
-                player.getPlayerName(),
-                player.getPlayerPosition(),
-                player.getPlayerAge(),
-                player.getBirthday(),
-                player.getTeam(),
-                player.getStatistics()
-        );
+    PlayerDto expectedPlayerDto = new PlayerDto(
+        player.getPlayerId(),
+        player.getPlayerName(),
+        player.getPlayerPosition(),
+        player.getPlayerAge(),
+        player.getBirthday(),
+        player.getTeam(),
+        player.getStatistics()
+    );
 
-        // When
-        when(playerService.getPlayerDtoByName(anyString())).thenReturn(expectedPlayerDto);
+    // When
+    when(playerService.getPlayerDtoByName(anyString())).thenReturn(expectedPlayerDto);
 
-        // Then
-        PlayerDto actualPlayerDto = playerService.getPlayerDtoByName(playerName);
-        assertEquals(expectedPlayerDto, actualPlayerDto);
-    }
+    // Then
+    PlayerDto actualPlayerDto = playerService.getPlayerDtoByName(playerName);
+    assertEquals(expectedPlayerDto, actualPlayerDto);
+  }
 }

@@ -22,64 +22,64 @@ import static org.mockito.Mockito.when;
 
 class PlayerReportDataServiceTest {
 
-    @Mock
-    private AIReportService aiReportService;
+  @Mock
+  private AIReportService aiReportService;
 
-    @Mock
-    private PlayerReportRepository playerReportRepository;
+  @Mock
+  private PlayerReportRepository playerReportRepository;
 
-    @Mock
-    private PlayerReportMapper playerReportMapper;
+  @Mock
+  private PlayerReportMapper playerReportMapper;
 
-    @Mock
-    private PlayerDataService playerDataService;  // Mock PlayerDataService
+  @Mock
+  private PlayerDataService playerDataService;  // Mock PlayerDataService
 
-    @InjectMocks
-    private PlayerReportService playerReportService;
+  @InjectMocks
+  private PlayerReportService playerReportService;
 
-    @BeforeEach
-    void setUp() {
-        MockitoAnnotations.openMocks(this);
-    }
+  @BeforeEach
+  void setUp() {
+    MockitoAnnotations.openMocks(this);
+  }
 
-    @Test
-    void testGetOrCreatePlayerReport() {
-        // Given
-        String playerName = "Ronaldo";
-        Player player = new Player();
-        player.setPlayerName(playerName);
-        player.setPlayerPosition("Forward");
-        player.setPlayerAge(25);
-        player.setBirthday("1998-04-12");
-        player.setTeam("Real Madrid");
+  @Test
+  void testGetOrCreatePlayerReport() {
+    // Given
+    String playerName = "Ronaldo";
+    Player player = new Player();
+    player.setPlayerName(playerName);
+    player.setPlayerPosition("Forward");
+    player.setPlayerAge(25);
+    player.setBirthday("1998-04-12");
+    player.setTeam("Real Madrid");
 
-        PlayerReport expectedReport = new PlayerReport();
-        expectedReport.setPlayer(player);
-        expectedReport.setPlayerStrengths("Strong footwork");
-        expectedReport.setPlayerWeaknesses("Needs better stamina");
-        expectedReport.setPlayerSummary("Overall a Phenomenal player.");
+    PlayerReport expectedReport = new PlayerReport();
+    expectedReport.setPlayer(player);
+    expectedReport.setPlayerStrengths("Strong footwork");
+    expectedReport.setPlayerWeaknesses("Needs better stamina");
+    expectedReport.setPlayerSummary("Overall a Phenomenal player.");
 
-        PlayerReportDto expectedReportDto = new PlayerReportDto(
-                null,
-                player.getPlayerName(),
-                expectedReport.getPlayerStrengths(),
-                expectedReport.getPlayerWeaknesses(),
-                expectedReport.getPlayerSummary(),
-                null
-        );
+    PlayerReportDto expectedReportDto = new PlayerReportDto(
+        null,
+        player.getPlayerName(),
+        expectedReport.getPlayerStrengths(),
+        expectedReport.getPlayerWeaknesses(),
+        expectedReport.getPlayerSummary(),
+        null
+    );
 
-        // Mock the methods
-        when(playerDataService.getPlayerDataByName(playerName)).thenReturn(player);
-        when(playerReportRepository.findByPlayer(player)).thenReturn(Optional.empty());
-        when(aiReportService.generateScoutingReport(player)).thenReturn(expectedReport);
-        when(playerReportMapper.toDto(expectedReport)).thenReturn(expectedReportDto);
+    // Mock the methods
+    when(playerDataService.getPlayerDataByName(playerName)).thenReturn(player);
+    when(playerReportRepository.findByPlayer(player)).thenReturn(Optional.empty());
+    when(aiReportService.generateScoutingReport(player)).thenReturn(expectedReport);
+    when(playerReportMapper.toDto(expectedReport)).thenReturn(expectedReportDto);
 
-        PlayerReportDto actualReportDto = playerReportService.getOrCreatePlayerReport(playerName);
+    PlayerReportDto actualReportDto = playerReportService.getOrCreatePlayerReport(playerName);
 
-        // Assert
-        assertEquals(expectedReportDto, actualReportDto);
-        verify(playerReportRepository).findByPlayer(player);
-        verify(aiReportService).generateScoutingReport(player);
-        verify(playerReportMapper).toDto(expectedReport);
-    }
+    // Assert
+    assertEquals(expectedReportDto, actualReportDto);
+    verify(playerReportRepository).findByPlayer(player);
+    verify(aiReportService).generateScoutingReport(player);
+    verify(playerReportMapper).toDto(expectedReport);
+  }
 }
