@@ -53,6 +53,12 @@ public class SecurityFilterChainConfig {
                 HttpMethod.GET,
                 "/actuator/**")
             .permitAll()
+            .requestMatchers(
+                "v3/api-docs/**",
+                "/swagger-ui/**",
+                "/swagger-ui.html"
+            )
+            .permitAll()
             .anyRequest()
             .authenticated()
         )
