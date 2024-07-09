@@ -179,6 +179,9 @@ mvn sonar:sonar -Dsonar.token=SONAR_TOKEN
   * Username: admin
   * Password: admin
 
+## API Documentation
+* Swagger UI: Access the Swagger UI at http://localhost:8080/swagger-ui.html to explore and test the API endpoints.
+
 ## Contributing
 I welcome contributions from the community! If you're a football enthusiast, data scientist, or developer, there are plenty of ways to get involved.
 
