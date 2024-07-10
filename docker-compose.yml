@@ -51,6 +51,39 @@ services:
       - db
     restart: unless-stopped
 
+  football-oracle-backend:
+    container_name: football-oracle-backend
+    image: sshaikholla/football-oracle-backend
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/fb-oracle-db
+      SPRING_DATASOURCE_USERNAME: {{}}
+      SPRING_DATASOURCE_PASSWORD: {{}}
+      GOOGLE_CLOUD_PROJECT_ID: {{}}
+      GOOGLE_CLOUD_REGION: {{}}
+      JWT_SECRET: {{}}
+    ports:
+      - "8080:8080"
+    networks:
+      - db
+    depends_on:
+      - db
+    restart: unless-stopped
+
+  football-oracle-frontend:
+    container_name: football-oracle-frontend
+    image: sshaikholla/football-oracle-frontend
+    build:
+      context: frontend/football-oracle-fe
+      args:
+        api_base_url: http://football-oracle-backend:8080
+    environment:
+      - VITE_API_BASE_URL=http://localhost:8080
+    ports:
+      - "3000:5173"
+    depends_on:
+      - football-oracle-backend
+    restart: unless-stopped
+
 networks:
   db:
     driver: bridge
